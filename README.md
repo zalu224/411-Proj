@@ -1,2 +1,2 @@
 README \\
-Suggestions - Weather API with Parking Meters Availability
+CS411 lab section B3, team 4
