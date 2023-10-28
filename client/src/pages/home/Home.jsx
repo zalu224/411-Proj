@@ -8,6 +8,13 @@ const Home = () => {
   const [loading, setLoading] = useState(false);
   const [isResponse, setIsResponse] = useState(false);
 
+  const creatorLinks = {
+    Tony: "p",
+    Isa: "p",
+    Aaron: "p",
+    Panos: "p",
+    Victor: "https://www.linkedin.com/in/victor-verma-91713022b/",
+  };
   const handleQuery = () => {
     setLoading(true);
     axios
@@ -16,6 +23,7 @@ const Home = () => {
         /* parse api response data */
         console.log(response);
         setIsResponse(true);
+        setLoading(false);
       })
       .catch((error) => {
         console.log(error);
@@ -24,29 +32,79 @@ const Home = () => {
   };
 
   return (
-    <div className="home-content">
-      <div className="home-title-container">
-        <h1 className="home-title">Application Title</h1>
-      </div>
-      {isResponse ? (
-        "placeholder"
-      ) : loading ? (
-        "placeholder"
-      ) : (
-        <div className="search-bar">
-          <h2 className="search-bar-title">What did you eat?</h2>
-          <input
-            className="search-bar-input"
-            type="text"
-            value={query}
-            onChange={(i) => setQuery(i.target.value)}
-          />
-          <button className="search-bar-button" onClick={handleQuery}>
-            Get my calories!
-          </button>
+    <>
+      <div className="home-content">
+        <div className="home-title-container">
+          <h1 className="home-title">Application Title</h1>
         </div>
-      )}
-    </div>
+        {isResponse ? (
+          "placeholder"
+        ) : loading ? (
+          "placeholder"
+        ) : (
+          <div className="search-bar">
+            <h2 className="search-bar-title">What did you eat?</h2>
+            <input
+              className="search-bar-input"
+              type="text"
+              value={query}
+              onChange={(i) => setQuery(i.target.value)}
+            />
+            <button className="search-bar-button" onClick={handleQuery}>
+              Get my calories!
+            </button>
+          </div>
+        )}
+        {console.log(creatorLinks.Victor)}
+        <div className="home-footer">
+          Created by{" "}
+          <a
+            className="home-footer-link"
+            target="_blank"
+            rel="noreferrer"
+            href={creatorLinks.Victor}
+          >
+            Tony
+          </a>
+          {", "}
+          <a
+            className="home-footer-link"
+            target="_blank"
+            rel="noreferrer"
+            href={creatorLinks.Victor}
+          >
+            Isa
+          </a>
+          {", "}
+          <a
+            className="home-footer-link"
+            target="_blank"
+            rel="noreferrer"
+            href={creatorLinks.Victor}
+          >
+            Aaron
+          </a>
+          {", "}
+          <a
+            className="home-footer-link"
+            target="_blank"
+            rel="noreferrer"
+            href={creatorLinks.Victor}
+          >
+            Panos
+          </a>
+          {", and "}
+          <a
+            className="home-footer-link"
+            target="_blank"
+            rel="noreferrer"
+            href={creatorLinks.Victor}
+          >
+            Victor
+          </a>
+        </div>
+      </div>
+    </>
   );
 };
 
