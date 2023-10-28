@@ -8,13 +8,15 @@ const Home = () => {
   const [loading, setLoading] = useState(false);
   const [isResponse, setIsResponse] = useState(false);
 
+  // store this in database
   const creatorLinks = {
-    Tony: "p",
-    Isa: "p",
-    Aaron: "p",
-    Panos: "p",
+    Tony: "placeholder",
+    Isa: "placeholder",
+    Aaron: "placeholder",
+    Panos: "placeholder",
     Victor: "https://www.linkedin.com/in/victor-verma-91713022b/",
   };
+
   const handleQuery = () => {
     setLoading(true);
     axios
@@ -51,18 +53,17 @@ const Home = () => {
               onChange={(i) => setQuery(i.target.value)}
             />
             <button className="search-bar-button" onClick={handleQuery}>
-              Get my calories!
+              Analyze my nutrition!
             </button>
           </div>
         )}
-        {console.log(creatorLinks.Victor)}
         <div className="home-footer">
           Created by{" "}
           <a
             className="home-footer-link"
             target="_blank"
             rel="noreferrer"
-            href={creatorLinks.Victor}
+            href={creatorLinks.Tony}
           >
             Tony
           </a>
@@ -71,7 +72,7 @@ const Home = () => {
             className="home-footer-link"
             target="_blank"
             rel="noreferrer"
-            href={creatorLinks.Victor}
+            href={creatorLinks.Isa}
           >
             Isa
           </a>
@@ -80,7 +81,7 @@ const Home = () => {
             className="home-footer-link"
             target="_blank"
             rel="noreferrer"
-            href={creatorLinks.Victor}
+            href={creatorLinks.Aaron}
           >
             Aaron
           </a>
@@ -89,7 +90,7 @@ const Home = () => {
             className="home-footer-link"
             target="_blank"
             rel="noreferrer"
-            href={creatorLinks.Victor}
+            href={creatorLinks.Panos}
           >
             Panos
           </a>
