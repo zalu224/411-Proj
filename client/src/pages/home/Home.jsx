@@ -10,12 +10,14 @@ const Home = () => {
         <h1 className="home-title">Application Title</h1>
       </div>
       <div className="search-bar">
+        <h2 className="search-bar-title">What did you eat?</h2>
         <input
           className="search-bar-input"
           type="text"
           value={query}
-          onChange={(input) => setQuery(input.target.value)}
+          onChange={(i) => setQuery(i.target.value)}
         />
+        <button className="search-bar-button">Get my calories!</button>
       </div>
     </div>
   );
