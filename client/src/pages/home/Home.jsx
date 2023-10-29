@@ -10,7 +10,7 @@ const Home = () => {
 
   // store this in database
   const creatorLinks = {
-    Tony: "placeholder",
+    Tony: "https://www.linkedin.com/in/tony-cen-cen-47a323252/",
     Isa: "placeholder",
     Aaron: "placeholder",
     Panos: "placeholder",
