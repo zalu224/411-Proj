@@ -28,7 +28,7 @@ const Login = () => {
     useEffect(() => {
       /* global google */
       google.accounts.id.initialize({
-      client_id: "779904224252-q1o1dn1dsiq08tro5grr9r17gpetgdgp.apps.googleusercontent.com",
+      client_id: "placeholder",
       callback: handleCallbackResponse
     });
     
