@@ -8,12 +8,26 @@ const Login = () => {
   const [ error, setError ] = useState('');
   const navigate = useNavigate();
 
+  // Importing environmental variables
+  const google_client_id = import.meta.env.VITE_GOOGLE_CLIENT_ID
+  const backend_url = import.meta.env.VITE_BACKEND_URL
+
+  function sendDataToBackend(data) {
+    axios.post(backend_url, data)
+    .then(response => {
+      console.log('Data successfully sent to the backend.');
+    })
+    .catch(error => {
+      console.error("Error sending data:", error);
+    });
+  }
+
   function handleCallbackResponse(response) {
     // response.credential = JWT returned from Google signaling successful login
     var userObject = jwtDecode(response.credential)
     
     if (userObject){
-      // also need to send userObject and/or response.credential to the backend for storage
+      //sendDataToBackend(userObject);
 
       // user logged in successfully, redirect to home page
       console.log(`successful login`);
@@ -28,15 +42,18 @@ const Login = () => {
     useEffect(() => {
       /* global google */
       google.accounts.id.initialize({
-      client_id: "placeholder",
+      client_id: google_client_id,
       callback: handleCallbackResponse
     });
     
     
-    google.accounts.id.renderButton(
-      document.getElementById("signInDiv"),
-      { theme: "outline", size: "large"}
-      );
+      google.accounts.id.renderButton(
+        document.getElementById("signInDiv"),
+        { theme: "outline", size: "large"}
+        );
+
+      //console.log('google_client_id:', google_client_id);
+
     }, []);
     
     
