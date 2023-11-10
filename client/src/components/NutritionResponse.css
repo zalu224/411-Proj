@@ -3,8 +3,20 @@
     margin: auto;
 }
 
+.response-column-field {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    border-bottom: 1px solid mediumslateblue;
+}
+
 .response-container {
-    width: 50%;
+    width: 100%;
+    margin: auto;
+}
+
+.response-item {
+    width: 45%;
     margin: auto;
 }
 
@@ -15,9 +27,22 @@
     justify-content: space-around;
 }
 
-.response-column-field {
+.response-item-container {
     display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    border-bottom: 1px solid mediumslateblue;
+    flex-flow: row wrap;
+    justify-content: space-around;
+}
+
+.response-item-name {
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+    font-size: 1.5rem;
+}
+
+.response-item-serving {
+    margin-block: 0.25rem;
+}
+
+.response-title {
+    font-size: 2rem;
 }

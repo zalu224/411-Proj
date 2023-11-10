@@ -15,7 +15,7 @@ const Home = () => {
   // store this in database
   const creatorLinks = {
     Tony: "https://www.linkedin.com/in/tony-cen-cen-47a323252/",
-    Isa: "placeholder",
+    Isa: "https://www.linkedin.com/in/isa-alsafwah-a03446243/",
     Aaron: "placeholder",
     Panos: "placeholder",
     Victor: "https://www.linkedin.com/in/victor-verma-91713022b/",
@@ -99,7 +99,9 @@ const Home = () => {
         {loading ? (
           "loading"
         ) : isResponse ? (
-          <NutritionResponse response={sampleResponse.items} />
+          <div className="nutrition-response">
+            <NutritionResponse response={sampleResponse.items} />
+          </div>
         ) : (
           "no response"
         )}
