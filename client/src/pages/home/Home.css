@@ -20,6 +20,10 @@
     text-decoration: underline;
 }
 
+.home-title {
+    color: black;
+}
+
 .search-bar {
     display: flex;
     flex-direction: column;

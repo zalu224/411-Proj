@@ -1,0 +1,23 @@
+.response-column {
+    width: 15rem;
+    margin: auto;
+}
+
+.response-container {
+    width: 50%;
+    margin: auto;
+}
+
+.response-item-body {
+    display: flex;
+    flex-flow: row wrap;
+    text-align: left;
+    justify-content: space-around;
+}
+
+.response-column-field {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    border-bottom: 1px solid mediumslateblue;
+}
