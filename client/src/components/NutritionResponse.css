@@ -1,5 +1,5 @@
 .response-column {
-    width: 15rem;
+    width: 12rem;
     margin: auto;
 }
 
@@ -8,6 +8,12 @@
     flex-direction: row;
     justify-content: space-between;
     border-bottom: 1px solid mediumslateblue;
+    transition: 0.3s ease;
+}
+
+.response-column-field:hover {
+    border-bottom: 3px solid mediumslateblue;
+    font-size: 1.125rem;
 }
 
 .response-container {
