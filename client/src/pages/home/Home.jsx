@@ -4,13 +4,14 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { Link } from "react-router-dom";
 
 import NutritionResponse from "../../components/NutritionResponse";
+import Spinner from "../../components/Spinner/Spinner";
 
 import "./Home.css";
 
 const Home = () => {
-  const [query, setQuery] = useState(" ");
+  const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(false);
-  const [isResponse, setIsResponse] = useState(true);
+  const [isResponse, setIsResponse] = useState(false);
 
   // store this in database
   const creatorLinks = {
@@ -25,21 +26,41 @@ const Home = () => {
     setLoading(true);
     if (query.trim() === "") {
       console.log("query is empty");
+      setQuery("");
       setLoading(false);
       return;
     }
+    setIsResponse(true);
     axios
       .get("get request for calorie api results")
       .then((response) => {
         /* parse api response data */
         console.log(response);
-        setIsResponse(false);
+        setIsResponse(true);
+        setQuery("");
         setLoading(false);
       })
       .catch((error) => {
         console.log(error);
         setLoading(false);
       });
+  };
+
+  const handleQueryClear = () => {
+    setQuery("");
+  };
+
+  const handleResponseClear = () => {
+    setLoading(true);
+    setIsResponse(false);
+    setLoading(false);
+  };
+
+  const handleResponseReset = () => {
+    setLoading(true);
+    setQuery("");
+    setIsResponse(false);
+    setLoading(false);
   };
 
   const sampleResponse = {
@@ -93,18 +114,44 @@ const Home = () => {
           value={query}
           onChange={(i) => setQuery(i.target.value)}
         />
-        <button className="search-bar-button" onClick={handleQuery}>
-          Analyze my nutrition!
-        </button>
-        {loading ? (
-          "loading"
-        ) : isResponse ? (
-          <div className="nutrition-response">
-            <NutritionResponse response={sampleResponse.items} />
+      </div>
+      <div className="home-response">
+        {query !== "" && (
+          <div className="search-bar-buttons">
+            <button className="search-bar-button" onClick={handleQuery}>
+              Analyze
+            </button>
+            <button className="search-bar-button" onClick={handleQueryClear}>
+              Clear
+            </button>
           </div>
-        ) : (
-          "no response"
         )}
+        {loading ? (
+          <Spinner />
+        ) : (
+          isResponse && (
+            <>
+              <div className="nutrition-response">
+                <NutritionResponse response={sampleResponse.items} />
+              </div>
+              <div className="response-buttons">
+                <button
+                  className="response-button"
+                  onClick={handleResponseClear}
+                >
+                  Clear Response
+                </button>
+                <button
+                  className="response-button"
+                  onClick={handleResponseReset}
+                >
+                  Reset Query
+                </button>
+              </div>
+            </>
+          )
+        )}
+        {!query && !isResponse && <br />}
       </div>
       <div className="home-footer">
         Created by{" "}
