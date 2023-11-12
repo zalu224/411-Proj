@@ -10,7 +10,7 @@ const NutritionResponse = ({ response }) => {
         {response.map((item, index) => (
           <div className="response-item" key={index}>
             <h3 className="response-item-name">{item.name}</h3>
-            <h4 className="response-item-serving">{item.serving_size_g}g</h4>
+            <h4 className="response-item-serving">Serving Size: {item.serving_size_g}g</h4>
             <div className="response-item-body">
               <div className="response-column">
                 <div className="response-column-field">

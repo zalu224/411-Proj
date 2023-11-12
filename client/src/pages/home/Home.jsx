@@ -13,12 +13,9 @@ import "./Home.css";
 const Home = () => {
   const navigate = useNavigate();
 
-  const [query, setQuery] = useState(" ");
+  const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(false);
   const [isResponse, setIsResponse] = useState(false);
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [username, setUsername] = useState("Guest");
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [username, setUsername] = useState("Guest");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -30,13 +27,6 @@ const Home = () => {
     Aaron: "placeholder",
     Panos: "placeholder",
     Victor: "https://www.linkedin.com/in/victor-verma-91713022b/",
-  };
-
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
   };
 
   const handleClick = (event) => {
@@ -69,18 +59,7 @@ const Home = () => {
         setLoading(false);
       });
   };
-  
-  const handleSignInOut = () => {
-    if (isAuthenticated) { // User is currently signed in and is now signing out
-      setIsAuthenticated(false);
-      setUsername("Guest");
-    } else { // User is currently not signed in and is now signing in
-      navigate("/login");
-      setIsAuthenticated(true);
-      // Also set user name
-    }
-    handleClose();
-    
+
   const handleQueryClear = () => {
     setQuery("");
   };
@@ -96,6 +75,18 @@ const Home = () => {
     setQuery("");
     setIsResponse(false);
     setLoading(false);
+  };
+
+  const handleSignInOut = () => {
+    if (isAuthenticated) { // User is currently signed in and is now signing out
+      setIsAuthenticated(false);
+      setUsername("Guest");
+    } else { // User is currently not signed in and is now signing in
+      navigate("/login");
+      setIsAuthenticated(true);
+      // Also set user name
+    }
+    handleClose();
   };
 
   const sampleResponse = {
