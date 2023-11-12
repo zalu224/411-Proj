@@ -1,7 +1,9 @@
 import { useState } from "react";
 import axios from "axios";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
 
 import NutritionResponse from "../../components/NutritionResponse";
 import Spinner from "../../components/Spinner/Spinner";
@@ -9,9 +11,14 @@ import Spinner from "../../components/Spinner/Spinner";
 import "./Home.css";
 
 const Home = () => {
+  const navigate = useNavigate();
+  
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(false);
   const [isResponse, setIsResponse] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [username, setUsername] = useState("Guest");
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   // store this in database
   const creatorLinks = {
@@ -20,6 +27,13 @@ const Home = () => {
     Aaron: "placeholder",
     Panos: "placeholder",
     Victor: "https://www.linkedin.com/in/victor-verma-91713022b/",
+  };
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
   };
 
   const handleQuery = () => {
@@ -45,7 +59,18 @@ const Home = () => {
         setLoading(false);
       });
   };
-
+  
+  const handleSignInOut = () => {
+    if (isAuthenticated) { // User is currently signed in and is now signing out
+      setIsAuthenticated(false);
+      setUsername("Guest");
+    } else { // User is currently not signed in and is now signing in
+      navigate("/login");
+      setIsAuthenticated(true);
+      // Also set user name
+    }
+    handleClose();
+    
   const handleQueryClear = () => {
     setQuery("");
   };
@@ -100,9 +125,28 @@ const Home = () => {
     <div className="home-content">
       <div className="home-title-container">
         <div className="account-icon">
-          <Link className="home-login-button" to="/login">
-            <AccountCircleIcon sx={{ fontSize: 50 }} />
-          </Link>
+          <div>
+            {!isAuthenticated && (
+              <span className="username-placeholder">{username}</span>
+            )}
+            <AccountCircleIcon
+              sx={{ fontSize: 50 }}
+              aria-controls="simple-menu"
+              aria-haspopup="true"
+              onClick={handleClick}
+            />
+            <Menu
+              id="simple-menu"
+              anchorEl={anchorEl}
+              keepMounted
+              open={Boolean(anchorEl)}
+              onClose={handleClose}
+            >
+              <MenuItem onClick={handleSignInOut}>
+                {isAuthenticated ? "Sign Out" : "Sign In"}
+              </MenuItem>
+            </Menu>
+          </div>
         </div>
         <h1 className="home-title">Application Title</h1>
       </div>
