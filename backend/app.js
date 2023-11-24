@@ -45,7 +45,9 @@ app.get("/", ensureAuthenticated, (req, res) => {
   res.send("Welcome to our program!");
 });
 
+// auth routes (google)
 app.use("/auth", authRoutes);
+// api routes
 app.use("/api", apiRoutes);
 
 app.listen(port, () => {
