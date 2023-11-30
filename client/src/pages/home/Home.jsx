@@ -1,9 +1,10 @@
 import { useState } from "react";
 import axios from "axios";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
+import { useSnackbar } from "notistack";
 
 import NutritionResponse from "../../components/NutritionResponse";
 import Spinner from "../../components/Spinner/Spinner";
@@ -19,6 +20,7 @@ const Home = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [username, setUsername] = useState("Guest");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const { enqueueSnackbar } = useSnackbar();
 
   // store this in database
   const creatorLinks = {
@@ -42,6 +44,7 @@ const Home = () => {
       console.log("query is empty");
       setQuery("");
       setLoading(false);
+      enqueueSnackbar("Query cannot be empty", { variant: "error" });
       return;
     }
     setIsResponse(true);
@@ -61,27 +64,34 @@ const Home = () => {
   };
 
   const handleQueryClear = () => {
+    setLoading(true);
     setQuery("");
+    setLoading(false);
+    enqueueSnackbar("Query cleared", { variant: "success" });
   };
 
   const handleResponseClear = () => {
     setLoading(true);
     setIsResponse(false);
     setLoading(false);
+    enqueueSnackbar("Response cleared", { variant: "success" });
   };
 
-  const handleResponseReset = () => {
+  const handleQueryReset = () => {
     setLoading(true);
     setQuery("");
     setIsResponse(false);
     setLoading(false);
+    enqueueSnackbar("Query reset", { variant: "success" });
   };
 
   const handleSignInOut = () => {
-    if (isAuthenticated) { // User is currently signed in and is now signing out
+    if (isAuthenticated) {
+      // User is currently signed in and is now signing out
       setIsAuthenticated(false);
       setUsername("Guest");
-    } else { // User is currently not signed in and is now signing in
+    } else {
+      // User is currently not signed in and is now signing in
       navigate("/login");
       setIsAuthenticated(true);
       // Also set user name
@@ -186,10 +196,7 @@ const Home = () => {
                 >
                   Clear Response
                 </button>
-                <button
-                  className="response-button"
-                  onClick={handleResponseReset}
-                >
+                <button className="response-button" onClick={handleQueryReset}>
                   Reset Query
                 </button>
               </div>
