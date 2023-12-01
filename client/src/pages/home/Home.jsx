@@ -15,8 +15,10 @@ const Home = () => {
   const navigate = useNavigate();
 
   const [calorieQuery, setCalorieQuery] = useState("");
-  const [loading, setLoading] = useState(false);
   const [isCalorieResponse, setIsCalorieResponse] = useState(false);
+  const [recipeQuery, setRecipeQuery] = useState("");
+  const [isRecipeResponse, setIsRecipeResponse] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [username, setUsername] = useState("Guest");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -41,7 +43,6 @@ const Home = () => {
   const handleCalorieQuery = () => {
     setLoading(true);
     if (calorieQuery.trim() === "") {
-      console.log("query is empty");
       setCalorieQuery("");
       setLoading(false);
       enqueueSnackbar("Query cannot be empty", { variant: "error" });
@@ -61,11 +62,39 @@ const Home = () => {
         setLoading(false);
       });
   };
-
   const handleCalorieQueryClear = () => {
     setLoading(true);
     setCalorieQuery("");
     setIsCalorieResponse(false);
+    setLoading(false);
+    enqueueSnackbar("Query cleared", { variant: "success" });
+  };
+  const handleRecipeQuery = () => {
+    setLoading(true);
+    if (recipeQuery.trim() === "") {
+      setRecipeQuery("");
+      setLoading(false);
+      enqueueSnackbar("Query cannot be empty", { variant: "error" });
+      return;
+    }
+    setIsRecipeResponse(true);
+    axios
+      .get("placeholder")
+      .then((response) => {
+        console.log(response);
+        setIsCalorieResponse(true);
+        setCalorieQuery("");
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.log(error);
+        setLoading(false);
+      });
+  };
+  const handleRecipeQueryClear = () => {
+    setLoading(true);
+    setRecipeQuery("");
+    setIsRecipeResponse(false);
     setLoading(false);
     enqueueSnackbar("Query cleared", { variant: "success" });
   };
@@ -146,39 +175,82 @@ const Home = () => {
         </div>
         <h1 className="home-title">Nutrisistant</h1>
       </div>
-      <div className="search-bar">
-        <h2 className="search-bar-title">What did you eat?</h2>
-        <input
-          className="search-bar-input"
-          type="text"
-          value={calorieQuery}
-          onChange={(i) => setCalorieQuery(i.target.value)}
-        />
+      <div>
+        <div className="search-bar">
+          <h2 className="search-bar-title">What did you eat?</h2>
+          <input
+            className="search-bar-input"
+            type="text"
+            value={calorieQuery}
+            onChange={(i) => setCalorieQuery(i.target.value)}
+          />
+        </div>
+        <div>
+          {(calorieQuery !== "" || isCalorieResponse) && (
+            <div className="search-bar-buttons">
+              <button
+                className="search-bar-button"
+                onClick={handleCalorieQuery}
+              >
+                Analyze
+              </button>
+              <button
+                className="search-bar-button"
+                onClick={handleCalorieQueryClear}
+              >
+                Clear
+              </button>
+            </div>
+          )}
+          {loading ? (
+            <Spinner />
+          ) : (
+            isCalorieResponse && (
+              <div className="nutrition-response">
+                <NutritionResponse response={sampleResponse.items} />
+              </div>
+            )
+          )}
+          {!calorieQuery && !isCalorieResponse && <br />}
+        </div>
       </div>
       <div>
-        {(calorieQuery !== "" || isCalorieResponse) && (
-          <div className="search-bar-buttons">
-            <button className="search-bar-button" onClick={handleCalorieQuery}>
-              Analyze
-            </button>
-            <button
-              className="search-bar-button"
-              onClick={handleCalorieQueryClear}
-            >
-              Clear
-            </button>
-          </div>
-        )}
-        {loading ? (
-          <Spinner />
-        ) : (
-          isCalorieResponse && (
-            <div className="nutrition-response">
-              <NutritionResponse response={sampleResponse.items} />
+        <div className="search-bar">
+          <h2 className="search-bar-title">
+            What recipes do you want to make?
+          </h2>
+          <input
+            className="search-bar-input"
+            type="text"
+            value={recipeQuery}
+            onChange={(i) => setRecipeQuery(i.target.value)}
+          />
+        </div>
+        <div>
+          {(recipeQuery !== "" || isRecipeResponse) && (
+            <div className="search-bar-buttons">
+              <button className="search-bar-button" onClick={handleRecipeQuery}>
+                Analyze
+              </button>
+              <button
+                className="search-bar-button"
+                onClick={handleRecipeQueryClear}
+              >
+                Clear
+              </button>
             </div>
-          )
-        )}
-        {!calorieQuery && !isCalorieResponse && <br />}
+          )}
+          {loading ? (
+            <Spinner />
+          ) : (
+            isRecipeResponse && (
+              <div className="nutrition-response">
+                <NutritionResponse response={sampleResponse.items} />
+              </div>
+            )
+          )}
+          {!recipeQuery && !isRecipeResponse && <br />}
+        </div>
       </div>
       <div className="home-footer">
         Created by{" "}
