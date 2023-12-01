@@ -39,12 +39,11 @@ const Login = () => {
 
   const handleGoogleLogin = useCallback(async (response) => {
     try {
-      const userObject = jwtDecode(response.credential);
+      const token = response.credential
 
       // Assuming the backend handles Google OAuth token validation
       const oauthResponse = await axios.post(`${backend_url}/google-login`, {
-        token: response.credential,
-        user: userObject,
+        token: token,
       });
 
       if (oauthResponse.data.token) {
