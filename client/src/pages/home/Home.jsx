@@ -14,9 +14,9 @@ import "./Home.css";
 const Home = () => {
   const navigate = useNavigate();
 
-  const [query, setQuery] = useState("");
+  const [calorieQuery, setCalorieQuery] = useState("");
   const [loading, setLoading] = useState(false);
-  const [isResponse, setIsResponse] = useState(false);
+  const [isCalorieResponse, setIsCalorieResponse] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [username, setUsername] = useState("Guest");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -38,22 +38,22 @@ const Home = () => {
     setAnchorEl(null);
   };
 
-  const handleQuery = () => {
+  const handleCalorieQuery = () => {
     setLoading(true);
-    if (query.trim() === "") {
+    if (calorieQuery.trim() === "") {
       console.log("query is empty");
-      setQuery("");
+      setCalorieQuery("");
       setLoading(false);
       enqueueSnackbar("Query cannot be empty", { variant: "error" });
       return;
     }
-    setIsResponse(true);
+    setIsCalorieResponse(true);
     axios
-      .get(`http://localhost:3000/${query}`)
+      .get(`http://localhost:3000/api/${calorieQuery}`)
       .then((response) => {
         console.log(response);
-        setIsResponse(true);
-        setQuery("");
+        setIsCalorieResponse(true);
+        setCalorieQuery("");
         setLoading(false);
       })
       .catch((error) => {
@@ -62,10 +62,10 @@ const Home = () => {
       });
   };
 
-  const handleQueryClear = () => {
+  const handleCalorieQueryClear = () => {
     setLoading(true);
-    setQuery("");
-    setIsResponse(false);
+    setCalorieQuery("");
+    setIsCalorieResponse(false);
     setLoading(false);
     enqueueSnackbar("Query cleared", { variant: "success" });
   };
@@ -151,17 +151,20 @@ const Home = () => {
         <input
           className="search-bar-input"
           type="text"
-          value={query}
-          onChange={(i) => setQuery(i.target.value)}
+          value={calorieQuery}
+          onChange={(i) => setCalorieQuery(i.target.value)}
         />
       </div>
-      <div className="home-response">
-        {(query !== "" || isResponse) && (
+      <div>
+        {(calorieQuery !== "" || isCalorieResponse) && (
           <div className="search-bar-buttons">
-            <button className="search-bar-button" onClick={handleQuery}>
+            <button className="search-bar-button" onClick={handleCalorieQuery}>
               Analyze
             </button>
-            <button className="search-bar-button" onClick={handleQueryClear}>
+            <button
+              className="search-bar-button"
+              onClick={handleCalorieQueryClear}
+            >
               Clear
             </button>
           </div>
@@ -169,13 +172,13 @@ const Home = () => {
         {loading ? (
           <Spinner />
         ) : (
-          isResponse && (
+          isCalorieResponse && (
             <div className="nutrition-response">
               <NutritionResponse response={sampleResponse.items} />
             </div>
           )
         )}
-        {!query && !isResponse && <br />}
+        {!calorieQuery && !isCalorieResponse && <br />}
       </div>
       <div className="home-footer">
         Created by{" "}
