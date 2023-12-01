@@ -49,9 +49,8 @@ const Home = () => {
     }
     setIsResponse(true);
     axios
-      .get("get request for calorie api results")
+      .get(`http://localhost:3000/${query}`)
       .then((response) => {
-        /* parse api response data */
         console.log(response);
         setIsResponse(true);
         setQuery("");
@@ -66,23 +65,9 @@ const Home = () => {
   const handleQueryClear = () => {
     setLoading(true);
     setQuery("");
+    setIsResponse(false);
     setLoading(false);
     enqueueSnackbar("Query cleared", { variant: "success" });
-  };
-
-  const handleResponseClear = () => {
-    setLoading(true);
-    setIsResponse(false);
-    setLoading(false);
-    enqueueSnackbar("Response cleared", { variant: "success" });
-  };
-
-  const handleQueryReset = () => {
-    setLoading(true);
-    setQuery("");
-    setIsResponse(false);
-    setLoading(false);
-    enqueueSnackbar("Query reset", { variant: "success" });
   };
 
   const handleSignInOut = () => {
@@ -159,7 +144,7 @@ const Home = () => {
             </Menu>
           </div>
         </div>
-        <h1 className="home-title">Application Title</h1>
+        <h1 className="home-title">Nutrisistant</h1>
       </div>
       <div className="search-bar">
         <h2 className="search-bar-title">What did you eat?</h2>
@@ -171,7 +156,7 @@ const Home = () => {
         />
       </div>
       <div className="home-response">
-        {query !== "" && (
+        {(query !== "" || isResponse) && (
           <div className="search-bar-buttons">
             <button className="search-bar-button" onClick={handleQuery}>
               Analyze
@@ -185,22 +170,9 @@ const Home = () => {
           <Spinner />
         ) : (
           isResponse && (
-            <>
-              <div className="nutrition-response">
-                <NutritionResponse response={sampleResponse.items} />
-              </div>
-              <div className="response-buttons">
-                <button
-                  className="response-button"
-                  onClick={handleResponseClear}
-                >
-                  Clear Response
-                </button>
-                <button className="response-button" onClick={handleQueryReset}>
-                  Reset Query
-                </button>
-              </div>
-            </>
+            <div className="nutrition-response">
+              <NutritionResponse response={sampleResponse.items} />
+            </div>
           )
         )}
         {!query && !isResponse && <br />}
