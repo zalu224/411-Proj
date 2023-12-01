@@ -47,6 +47,7 @@ const Login = () => {
       // Sending only the token to the backend
       const oauthResponse = await axios.post(`${backend_url}/google-login`, {
         token: token,
+        token: token,
       });
   
       if (oauthResponse.data.token) {
