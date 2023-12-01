@@ -27,14 +27,6 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-// cors setup
-const corsOptions = {
-  origin: 'http://localhost:5173', // the frontend port
-  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-  credentials: true, // required for cookies, authorization headers, etc.
-};
-
-app.use(cors(corsOptions));
 
 // cookie parser
 const cookieParser = require("cookie-parser");
