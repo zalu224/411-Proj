@@ -6,6 +6,8 @@ import { jwtDecode } from "jwt-decode";
 import './Login.css';
 
 const Login = () => {
+  // console.log(import.meta.env.VITE_BACKEND_URL);
+
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
@@ -39,14 +41,14 @@ const Login = () => {
 
   const handleGoogleLogin = useCallback(async (response) => {
     try {
-      const userObject = jwtDecode(response.credential);
-
-      // Assuming the backend handles Google OAuth token validation
+      // Assuming response.credential holds the JWT token
+      const token = response.credential;
+  
+      // Sending only the token to the backend
       const oauthResponse = await axios.post(`${backend_url}/google-login`, {
-        token: response.credential,
-        user: userObject,
+        token: token,
       });
-
+  
       if (oauthResponse.data.token) {
         localStorage.setItem('token', oauthResponse.data.token);
         console.log('Successful login via Google OAuth');
@@ -59,6 +61,7 @@ const Login = () => {
       setError('An error occurred. Please try again.');
     }
   }, [navigate, backend_url]);
+  
 
   useEffect(() => {
     // Loading Google API and initializing Google Sign-In
