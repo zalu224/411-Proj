@@ -52,7 +52,7 @@ const Home = () => {
     axios
       .get(`http://localhost:3000/api/${calorieQuery}`)
       .then((response) => {
-        console.log(response);
+        console.log(response.data.data);
         setIsCalorieResponse(true);
         setCalorieQuery("");
         setLoading(false);
