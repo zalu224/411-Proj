@@ -76,6 +76,7 @@
 .search-bar-buttons {
     width: 20rem;
     margin: auto;
+    margin-bottom: 2rem;
     display: flex;
     flex-direction: row;
     justify-content: space-around;
