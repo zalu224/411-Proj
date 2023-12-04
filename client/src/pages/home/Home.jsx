@@ -16,7 +16,7 @@ const Home = () => {
   const [calorieQuery, setCalorieQuery] = useState("");
   const [calorieResponse, setCalorieResponse] = useState(null);
   const [recipeQuery, setRecipeQuery] = useState("");
-  const [isRecipeResponse, setIsRecipeResponse] = useState(false);
+  const [recipeResponse, setRecipeResponse] = useState(null);
   const [loading, setLoading] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [username, setUsername] = useState("Guest");
@@ -74,14 +74,12 @@ const Home = () => {
       enqueueSnackbar("Query cannot be empty", { variant: "error" });
       return;
     }
-    setIsRecipeResponse(true);
     axios
       .get("placeholder")
       .then((response) => {
-        setCalorieResponse(response.data);
-        console.log(calorieResponse);
-        setCalorieResponse(response.data);
-        setCalorieQuery("");
+        setRecipeResponse(response.data);
+        console.log(recipeResponse);
+        setRecipeQuery("");
         setLoading(false);
       })
       .catch((error) => {
@@ -92,7 +90,7 @@ const Home = () => {
   const handleRecipeQueryClear = () => {
     setLoading(true);
     setRecipeQuery("");
-    setIsRecipeResponse(false);
+    setRecipeResponse(false);
     setLoading(false);
     enqueueSnackbar("Query cleared", { variant: "success" });
   };
@@ -225,7 +223,7 @@ const Home = () => {
           />
         </div>
         <div>
-          {(recipeQuery !== "" || isRecipeResponse) && (
+          {(recipeQuery !== "" || recipeResponse !== null) && (
             <div className="search-bar-buttons">
               <button className="search-bar-button" onClick={handleRecipeQuery}>
                 Analyze
@@ -241,13 +239,13 @@ const Home = () => {
           {loading ? (
             <Spinner />
           ) : (
-            isRecipeResponse && (
+            recipeResponse !== null && (
               <div className="nutrition-response">
                 <NutritionResponse response={sampleResponse.items} />
               </div>
             )
           )}
-          {!recipeQuery && !isRecipeResponse && <br />}
+          {!recipeQuery && recipeResponse === null && <br />}
         </div>
       </div>
       <div className="home-footer">
