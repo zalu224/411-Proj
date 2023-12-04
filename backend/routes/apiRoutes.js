@@ -85,20 +85,26 @@ router.get("/:food", ensureAuthenticated, async (req, res) => {
 });
 
 // Endpoint to make an API call
-router.get("/complex-search/:query", ensureAuthenticated, async (req, res) => {
+router.get("/:query", ensureAuthenticated, async (req, res) => {
   // get the query string from the front end
   const query = req.params.query;
 
   // make the api call
   try {
     const response = await axios.get(
-      `https://api.spoonacular.com/recipes/complexSearch?query=${query}`,
+      "https://api.spoonacular.com/recipes/complexSearch",
       {
+        // Include the parameters in the params object
+        params: {
+          query: query, // Your query parameter
+          // You can add other parameters like 'cuisine' if needed
+        },
         // Set the response content type
         headers: {
           "Content-Type": "application/json",
+          "X-Api-Key": process.env.spoonacularAPIkey,
           // Other necessary headers like API keys should be added here
-          // "X-Api-Key": "Your-Spoonacular-API-Key"
+  
         },
       }
     );

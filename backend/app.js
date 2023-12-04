@@ -77,6 +77,33 @@ app.get("/api/:food", async (req, res) => {
   }
 });
 
+app.get("/api/:query", async (req, res) => {
+  const query = req.params.food;
+  try {
+    const response = await axios.get(
+      "https://api.spoonacular.com/recipes/complexSearch",
+      {
+        // Include the parameters in the params object
+        params: {
+          query: query, // Your query parameter
+          // You can add other parameters like 'cuisine' if needed
+        },
+        // Set the response content type
+        headers: {
+          "Content-Type": "application/json",
+          "X-Api-Key": process.env.spoonacularAPIkey,
+          // Other necessary headers like API keys should be added here
+  
+        },
+      }
+    );
+    res.send(response.data);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("An error occurred while fetching data");
+  }
+});
+
 app.post('/google-login', async (req, res) => {
   try {
     const { token } = req.body;
