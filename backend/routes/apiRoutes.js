@@ -84,4 +84,58 @@ router.get("/:food", ensureAuthenticated, async (req, res) => {
   }
 });
 
+// Endpoint to make an API call
+router.get("/complex-search/:query", ensureAuthenticated, async (req, res) => {
+  // get the query string from the front end
+  const query = req.params.query;
+
+  // make the api call
+  try {
+    const response = await axios.get(
+      `https://api.spoonacular.com/recipes/complexSearch?query=${query}`,
+      {
+        // Set the response content type
+        headers: {
+          "Content-Type": "application/json",
+          // Other necessary headers like API keys should be added here
+          // "X-Api-Key": "Your-Spoonacular-API-Key"
+        },
+      }
+    );
+
+    // Check if req.user is defined
+    if (!req.user) {
+      return res.status(500).send("User data not found");
+    }
+
+    // Create an object with both the search string and the JSON response
+    const searchEntry = {
+      query: query,
+      response: response.data, // Assuming the API returns the data in the desired format
+    };
+
+    // Ensure that req.user is an instance of the User model
+    if (!(req.user instanceof User)) {
+      // If not, try to populate it
+      await req.user.execPopulate();
+    }
+
+    // Add the search entry to the search history if req.user.searchHistory exists
+    if (req.user.searchHistory) {
+      req.user.searchHistory.push(searchEntry);
+    }
+
+    // Save the user
+    await req.user.save();
+
+    // send the JSON object back to the front end
+    res.send(response.data);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("An error occurred while fetching data from Spoonacular");
+  }
+});
+
+
+
 module.exports = router;
