@@ -13,9 +13,8 @@ import "./Home.css";
 
 const Home = () => {
   const navigate = useNavigate();
-
   const [calorieQuery, setCalorieQuery] = useState("");
-  const [isCalorieResponse, setIsCalorieResponse] = useState(false);
+  const [calorieResponse, setCalorieResponse] = useState(null);
   const [recipeQuery, setRecipeQuery] = useState("");
   const [isRecipeResponse, setIsRecipeResponse] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -48,12 +47,10 @@ const Home = () => {
       enqueueSnackbar("Query cannot be empty", { variant: "error" });
       return;
     }
-    setIsCalorieResponse(true);
     axios
       .get(`http://localhost:3000/api/${calorieQuery}`)
       .then((response) => {
-        console.log(response.data.data);
-        setIsCalorieResponse(true);
+        setCalorieResponse(response.data);
         setCalorieQuery("");
         setLoading(false);
       })
@@ -65,7 +62,7 @@ const Home = () => {
   const handleCalorieQueryClear = () => {
     setLoading(true);
     setCalorieQuery("");
-    setIsCalorieResponse(false);
+    setCalorieResponse(null);
     setLoading(false);
     enqueueSnackbar("Query cleared", { variant: "success" });
   };
@@ -81,8 +78,9 @@ const Home = () => {
     axios
       .get("placeholder")
       .then((response) => {
-        console.log(response);
-        setIsCalorieResponse(true);
+        setCalorieResponse(response.data);
+        console.log(calorieResponse);
+        setCalorieResponse(response.data);
         setCalorieQuery("");
         setLoading(false);
       })
@@ -186,7 +184,7 @@ const Home = () => {
           />
         </div>
         <div>
-          {(calorieQuery !== "" || isCalorieResponse) && (
+          {(calorieQuery !== "" || calorieResponse !== null) && (
             <div className="search-bar-buttons">
               <button
                 className="search-bar-button"
@@ -205,13 +203,13 @@ const Home = () => {
           {loading ? (
             <Spinner />
           ) : (
-            isCalorieResponse && (
+            calorieResponse !== null && (
               <div className="nutrition-response">
-                <NutritionResponse response={sampleResponse.items} />
+                <NutritionResponse response={calorieResponse.items} />
               </div>
             )
           )}
-          {!calorieQuery && !isCalorieResponse && <br />}
+          {!calorieQuery && calorieResponse === null && <br />}
         </div>
       </div>
       <div>
