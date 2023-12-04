@@ -47,6 +47,13 @@ const Home = () => {
       enqueueSnackbar("Query cannot be empty", { variant: "error" });
       return;
     }
+    if (calorieQuery.includes("%")) {
+      setLoading(false);
+      enqueueSnackbar("Query cannot contain the % symbol", {
+        variant: "error",
+      });
+      return;
+    }
     axios
       .get(`http://localhost:3000/api/${calorieQuery}`)
       .then((response) => {
@@ -56,6 +63,7 @@ const Home = () => {
       })
       .catch((error) => {
         console.log(error);
+        enqueueSnackbar(error, { variant: "error" });
         setLoading(false);
       });
   };
@@ -72,6 +80,13 @@ const Home = () => {
       setRecipeQuery("");
       setLoading(false);
       enqueueSnackbar("Query cannot be empty", { variant: "error" });
+      return;
+    }
+    if (calorieQuery.includes("%")) {
+      setLoading(false);
+      enqueueSnackbar("Query cannot contain the % symbol", {
+        variant: "error",
+      });
       return;
     }
     axios
