@@ -15,6 +15,7 @@ const Home = () => {
   const navigate = useNavigate();
   const [calorieQuery, setCalorieQuery] = useState("");
   const [calorieResponse, setCalorieResponse] = useState(null);
+  const [nutritionHistory, setNutritionHistory] = useState(null);
   const [recipeQuery, setRecipeQuery] = useState("");
   const [recipeResponse, setRecipeResponse] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -84,7 +85,18 @@ const Home = () => {
     enqueueSnackbar("Query cleared", { variant: "success" });
   };
   const getNutritionHistory = () => {
-    return;
+    setLoading(true);
+    axios
+      .get("http://localhost:3000/api/search-history")
+      .then((response) => {
+        setNutritionHistory(response.data.data);
+        console.log(nutritionHistory);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.log(error);
+        setLoading(false);
+      });
   };
   const handleRecipeQuery = () => {
     setLoading(true);
@@ -134,39 +146,6 @@ const Home = () => {
       // Also set user name
     }
     handleClose();
-  };
-
-  const sampleResponse = {
-    items: [
-      {
-        sugar_g: 13.3,
-        fiber_g: 4,
-        serving_size_g: 283.495,
-        sodium_mg: 8,
-        name: "onion",
-        potassium_mg: 99,
-        fat_saturated_g: 0.1,
-        fat_total_g: 0.5,
-        calories: 126.7,
-        cholesterol_mg: 0,
-        protein_g: 3.9,
-        carbohydrates_total_g: 28.6,
-      },
-      {
-        sugar_g: 2.6,
-        fiber_g: 1.2,
-        serving_size_g: 100,
-        sodium_mg: 4,
-        name: "tomato",
-        potassium_mg: 23,
-        fat_saturated_g: 0,
-        fat_total_g: 0.2,
-        calories: 18.2,
-        cholesterol_mg: 0,
-        protein_g: 0.9,
-        carbohydrates_total_g: 3.9,
-      },
-    ],
   };
 
   return (
