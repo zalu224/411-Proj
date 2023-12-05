@@ -15,6 +15,7 @@ const Home = () => {
   const navigate = useNavigate();
   const [calorieQuery, setCalorieQuery] = useState("");
   const [calorieResponse, setCalorieResponse] = useState(null);
+  const [nutritionHistory, setNutritionHistory] = useState(null);
   const [recipeQuery, setRecipeQuery] = useState("");
   const [recipeResponse, setRecipeResponse] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -24,15 +25,13 @@ const Home = () => {
   const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     setIsAuthenticated(!!token); // Set isAuthenticated to true if token exists, false otherwise
-    
-    const username = localStorage.getItem('username');
-    console.log(username)
-    setUsername(username || 'Guest'); // Set the username obtained from localStorage or 'Guest' if not present
+
+    const username = localStorage.getItem("username");
+    console.log(username);
+    setUsername(username || "Guest"); // Set the username obtained from localStorage or 'Guest' if not present
   }, []);
-  
-  
 
   // store this in database
   const creatorLinks = {
@@ -85,6 +84,20 @@ const Home = () => {
     setLoading(false);
     enqueueSnackbar("Query cleared", { variant: "success" });
   };
+  const getNutritionHistory = () => {
+    setLoading(true);
+    axios
+      .get("http://localhost:3000/api/search-history")
+      .then((response) => {
+        setNutritionHistory(response.data.data);
+        console.log(nutritionHistory);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.log(error);
+        setLoading(false);
+      });
+  };
   const handleRecipeQuery = () => {
     setLoading(true);
     if (recipeQuery.trim() === "") {
@@ -135,47 +148,11 @@ const Home = () => {
     handleClose();
   };
 
-  const sampleResponse = {
-    items: [
-      {
-        sugar_g: 13.3,
-        fiber_g: 4,
-        serving_size_g: 283.495,
-        sodium_mg: 8,
-        name: "onion",
-        potassium_mg: 99,
-        fat_saturated_g: 0.1,
-        fat_total_g: 0.5,
-        calories: 126.7,
-        cholesterol_mg: 0,
-        protein_g: 3.9,
-        carbohydrates_total_g: 28.6,
-      },
-      {
-        sugar_g: 2.6,
-        fiber_g: 1.2,
-        serving_size_g: 100,
-        sodium_mg: 4,
-        name: "tomato",
-        potassium_mg: 23,
-        fat_saturated_g: 0,
-        fat_total_g: 0.2,
-        calories: 18.2,
-        cholesterol_mg: 0,
-        protein_g: 0.9,
-        carbohydrates_total_g: 3.9,
-      },
-    ],
-  };
-
   return (
     <div className="home-content">
       <div className="home-title-container">
         <div className="account-icon">
           <div>
-            {(
-              <span className="username-placeholder">{username}</span>
-            )}
             <AccountCircleIcon
               sx={{ fontSize: 50 }}
               aria-controls="simple-menu"
@@ -194,16 +171,19 @@ const Home = () => {
               </MenuItem>
             </Menu>
           </div>
+          <span className="username-placeholder">{username}</span>
         </div>
         <h1 className="home-title">Nutrisistant</h1>
       </div>
       <div>
         <div className="search-bar">
           <h2 className="search-bar-title">
-            {isAuthenticated ? 'What did you eat?' : 'Log in to use search feature'}
+            {isAuthenticated
+              ? "What did you eat?"
+              : "Log in to get nutrition info"}
           </h2>
           <input
-            className={`search-bar-input ${!isAuthenticated ? 'disabled' : ''}`} // Apply disabled class if not authenticated
+            className={`search-bar-input ${!isAuthenticated ? "disabled" : ""}`} // Apply disabled class if not authenticated
             type="text"
             value={calorieQuery}
             onChange={(e) => setCalorieQuery(e.target.value)}
@@ -236,16 +216,24 @@ const Home = () => {
               </div>
             )
           )}
+          {isAuthenticated ? (
+            <>
+              <button onClick={getNutritionHistory}>Get Search History</button>
+              <br />
+            </>
+          ) : null}
           {!calorieQuery && calorieResponse === null && <br />}
         </div>
       </div>
       <div>
         <div className="search-bar">
           <h2 className="search-bar-title">
-            {isAuthenticated ? 'What recipes do you want to make?' : 'Log in to use search feature'}
+            {isAuthenticated
+              ? "What recipes do you want to make?"
+              : "Log in to get recipes"}
           </h2>
           <input
-            className={`search-bar-input ${!isAuthenticated ? 'disabled' : ''}`} // Apply disabled class if not authenticated
+            className={`search-bar-input ${!isAuthenticated ? "disabled" : ""}`} // Apply disabled class if not authenticated
             type="text"
             value={recipeQuery}
             onChange={(e) => setRecipeQuery(e.target.value)}

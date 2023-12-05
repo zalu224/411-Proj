@@ -1,18 +1,18 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { useNavigate, NavLink } from 'react-router-dom';
-import axios from 'axios';
-import { Button, TextField, Container, Typography } from '@mui/material';
+import React, { useState, useEffect, useCallback } from "react";
+import { useNavigate, NavLink } from "react-router-dom";
+import axios from "axios";
+import { Button, TextField, Container, Typography } from "@mui/material";
 import { jwtDecode } from "jwt-decode";
-import './Login.css';
+import "./Login.css";
 
 const Login = () => {
   // console.log(import.meta.env.VITE_BACKEND_URL);
 
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
   const backend_url = import.meta.env.VITE_BACKEND_URL;
 
@@ -26,68 +26,68 @@ const Login = () => {
       // Check if the response contains a valid JWT token
       if (response.data.token) {
         // Store the token in local storage
-        localStorage.setItem('token', response.data.token);
-        localStorage.setItem('username', response.data.username);
-        console.log('Successful login via website');
-        navigate('/');
+        localStorage.setItem("token", response.data.token);
+        localStorage.setItem("username", response.data.username);
+        console.log("Successful login via website");
+        navigate("/");
       } else {
-        setError('Invalid credentials. Please try again.');
+        setError("Invalid credentials. Please try again.");
       }
     } catch (error) {
-      if (error.response.status === 400) 
-      {
-        setError("Invalid credentials")
+      if (error.response.status === 400) {
+        setError("Invalid credentials");
       } else {
-        console.error('Error during Google OAuth login:', error);
-        setError('An error occurred. Please try again.'); 
+        console.error("Error during Google OAuth login:", error);
+        setError("An error occurred. Please try again.");
       }
     }
   };
 
+  const handleGoogleLogin = useCallback(
+    async (response) => {
+      try {
+        // Assuming response.credential holds the JWT token
+        const token = response.credential;
 
-  const handleGoogleLogin = useCallback(async (response) => {
-    try {
-      // Assuming response.credential holds the JWT token
-      const token = response.credential;
-  
-      // Sending only the token to the backend
-      const oauthResponse = await axios.post(`${backend_url}/google-login`, {
-        token: token,
-      });
-  
-      if (oauthResponse.data.token) {
-        localStorage.setItem('token', oauthResponse.data.token);
-        const decodedToken = jwtDecode(token);
-        localStorage.setItem('username', decodedToken.name);
-        // 'decodedToken' now holds the decoded JWT token payload
-        //console.log(decodedToken);
-        console.log('Successful login via Google OAuth');
-        navigate('/');
-      } else {
-        setError('Google OAuth login failed. Please try again.');
+        // Sending only the token to the backend
+        const oauthResponse = await axios.post(`${backend_url}/google-login`, {
+          token: token,
+        });
+
+        if (oauthResponse.data.token) {
+          localStorage.setItem("token", oauthResponse.data.token);
+          const decodedToken = jwtDecode(token);
+          localStorage.setItem("username", decodedToken.name);
+          // 'decodedToken' now holds the decoded JWT token payload
+          //console.log(decodedToken);
+          console.log("Successful login via Google OAuth");
+          navigate("/");
+        } else {
+          setError("Google OAuth login failed. Please try again.");
+        }
+      } catch (error) {
+        console.error("Error during Google OAuth login:", error);
+        setError("An error occurred. Please try again.");
       }
-    } catch (error) {
-      console.error('Error during Google OAuth login:', error);
-      setError('An error occurred. Please try again.');
-    }
-  }, [navigate, backend_url]);
-  
+    },
+    [navigate, backend_url]
+  );
 
   useEffect(() => {
     // Loading Google API and initializing Google Sign-In
     const loadGoogleAPI = () => {
-      const script = document.createElement('script');
-      script.src = 'https://accounts.google.com/gsi/client';
+      const script = document.createElement("script");
+      script.src = "https://accounts.google.com/gsi/client";
       script.async = true;
       script.onload = () => {
         google.accounts.id.initialize({
           client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
           callback: handleGoogleLogin,
         });
-        google.accounts.id.renderButton(
-          document.getElementById('signInDiv'),
-          { theme: 'outline', size: 'large' }
-        );
+        google.accounts.id.renderButton(document.getElementById("signInDiv"), {
+          theme: "outline",
+          size: "large",
+        });
       };
       document.body.appendChild(script);
     };
@@ -107,7 +107,7 @@ const Login = () => {
           fullWidth
           margin="normal"
           value={username}
-          onChange={e => setUsername(e.target.value)}
+          onChange={(e) => setUsername(e.target.value)}
         />
         <TextField
           label="Password"
@@ -116,10 +116,11 @@ const Login = () => {
           fullWidth
           margin="normal"
           value={password}
-          onChange={e => setPassword(e.target.value)}
+          onChange={(e) => setPassword(e.target.value)}
         />
         <Typography variant="body1" align="center" gutterBottom>
-          Don't have an account? <NavLink to="/create-account">Create one</NavLink>
+          Don't have an account?{" "}
+          <NavLink to="/create-account">Create one</NavLink>
         </Typography>
         {error && (
           <Typography variant="body1" color="error" align="center">
@@ -134,7 +135,12 @@ const Login = () => {
         >
           Website Login
         </Button>
-        <Typography variant="h4" align="center" gutterBottom className="third-party-login-header">
+        <Typography
+          variant="h4"
+          align="center"
+          gutterBottom
+          className="third-party-login-header"
+        >
           Third Party Login
         </Typography>
         <div id="signInDiv" className="google-sign-in"></div>
