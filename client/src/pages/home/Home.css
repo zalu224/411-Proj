@@ -1,6 +1,8 @@
 .account-icon {
     width: fit-content;
     margin-left: auto;
+    display: flex;
+    flex-direction: column;
 }
 
 .search-bar-input.disabled {
@@ -103,4 +105,8 @@
 .search-bar-title {
     width: fit-content;
     margin: auto;
+}
+
+.username-placeholder {
+    width: 3rem;
 }

@@ -24,15 +24,13 @@ const Home = () => {
   const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     setIsAuthenticated(!!token); // Set isAuthenticated to true if token exists, false otherwise
-    
-    const username = localStorage.getItem('username');
-    console.log(username)
-    setUsername(username || 'Guest'); // Set the username obtained from localStorage or 'Guest' if not present
+
+    const username = localStorage.getItem("username");
+    console.log(username);
+    setUsername(username || "Guest"); // Set the username obtained from localStorage or 'Guest' if not present
   }, []);
-  
-  
 
   // store this in database
   const creatorLinks = {
@@ -84,6 +82,9 @@ const Home = () => {
     setCalorieResponse(null);
     setLoading(false);
     enqueueSnackbar("Query cleared", { variant: "success" });
+  };
+  const getNutritionHistory = () => {
+    return;
   };
   const handleRecipeQuery = () => {
     setLoading(true);
@@ -173,9 +174,6 @@ const Home = () => {
       <div className="home-title-container">
         <div className="account-icon">
           <div>
-            {(
-              <span className="username-placeholder">{username}</span>
-            )}
             <AccountCircleIcon
               sx={{ fontSize: 50 }}
               aria-controls="simple-menu"
@@ -194,16 +192,19 @@ const Home = () => {
               </MenuItem>
             </Menu>
           </div>
+          <span className="username-placeholder">{username}</span>
         </div>
         <h1 className="home-title">Nutrisistant</h1>
       </div>
       <div>
         <div className="search-bar">
           <h2 className="search-bar-title">
-            {isAuthenticated ? 'What did you eat?' : 'Log in to use search feature'}
+            {isAuthenticated
+              ? "What did you eat?"
+              : "Log in to get nutrition info"}
           </h2>
           <input
-            className={`search-bar-input ${!isAuthenticated ? 'disabled' : ''}`} // Apply disabled class if not authenticated
+            className={`search-bar-input ${!isAuthenticated ? "disabled" : ""}`} // Apply disabled class if not authenticated
             type="text"
             value={calorieQuery}
             onChange={(e) => setCalorieQuery(e.target.value)}
@@ -236,16 +237,24 @@ const Home = () => {
               </div>
             )
           )}
+          {isAuthenticated ? (
+            <>
+              <button onClick={getNutritionHistory}>Get Search History</button>
+              <br />
+            </>
+          ) : null}
           {!calorieQuery && calorieResponse === null && <br />}
         </div>
       </div>
       <div>
         <div className="search-bar">
           <h2 className="search-bar-title">
-            {isAuthenticated ? 'What recipes do you want to make?' : 'Log in to use search feature'}
+            {isAuthenticated
+              ? "What recipes do you want to make?"
+              : "Log in to get recipes"}
           </h2>
           <input
-            className={`search-bar-input ${!isAuthenticated ? 'disabled' : ''}`} // Apply disabled class if not authenticated
+            className={`search-bar-input ${!isAuthenticated ? "disabled" : ""}`} // Apply disabled class if not authenticated
             type="text"
             value={recipeQuery}
             onChange={(e) => setRecipeQuery(e.target.value)}
