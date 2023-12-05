@@ -5,6 +5,7 @@ import { Container, Typography, TextField, Button } from '@mui/material';
 
 const CreateAccount = () => {
   const navigate = useNavigate();
+  const backend_url = import.meta.env.VITE_BACKEND_URL;
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -18,31 +19,36 @@ const CreateAccount = () => {
       setError('All fields are required.');
       return;
     }
-
+  
     if (password !== confirmPassword) {
       setError('Passwords do not match.');
       return;
     }
-
+  
     try {
-      // Send username and password to the backend for both check and creation
-      const response = await axios.post('YOUR_BACKEND_CREATE_ACCOUNT_ENDPOINT', {
+      const response = await axios.post(`${backend_url}/create-account`, {
         username: username,
         password: password,
       });
-
-      if (response.data.exists) {
+  
+      if (response.status === 400 && response.data && response.data.exists) {
         setError('This username is already taken. Please choose another.');
-        return;
+      } else if (response.status === 201 && response.data && response.data.success) {
+        setError('');
+        navigate('/login');
       }
-
-      // Successful account creation
-      setError('');
-      // Redirect the user to the sign-in page or wherever desired
-      navigate('/login');
     } catch (error) {
-      console.error('Error creating account:', error);
-      setError('An error occurred. Please try again.');
+      if (error.response && error.response.status === 400) {
+        if (error.response.data && error.response.data.exists) {
+          setError('This username is already taken. Please choose another.');
+        }
+      } else if (error.response) {
+        console.error('Error creating account:', error.response);
+        setError('An error occurred. Please try again.');
+      } else {
+        console.error('Network error:', error);
+        setError('A network error occurred. Please try again.');
+      }
     }
   };
 

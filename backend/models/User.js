@@ -21,9 +21,18 @@ const responseSchema = new mongoose.Schema({
 
 
 const userSchema = new mongoose.Schema({
-  googleId: {
+  username: {
     type: String,
-    required: true,
+    required: false,
+    unique: true
+  },
+  password: {
+    type: String,
+    required: false
+  },
+  googleToken: {
+    type: String,
+    required: false,
   },
   searchHistory: [
     {
@@ -33,12 +42,20 @@ const userSchema = new mongoose.Schema({
   ],
 });
 
-const User = mongoose.model("User", userSchema);
+// Validate password method added to the userSchema
+userSchema.methods.validatePassword = async function (password) {
+  return await (password === this.password);
+};
 
+const User = mongoose.model("User", userSchema);
 
 // Implement the findOrCreate function
 User.findOrCreate = async function (condition, userData) {
   let user = await User.findOne(condition);
+
+  //console.log(condition, userData);
+  //console.log("Use, userData: ", userData);
+  //console.log("Use, userData.id: ", userData.googleId);
 
   if (!user) {
     user = new User(userData);
@@ -50,3 +67,5 @@ User.findOrCreate = async function (condition, userData) {
 
 
 module.exports = User;
+
+

@@ -27,14 +27,20 @@ const Login = () => {
       if (response.data.token) {
         // Store the token in local storage
         localStorage.setItem('token', response.data.token);
+        localStorage.setItem('username', response.data.username);
         console.log('Successful login via website');
         navigate('/');
       } else {
         setError('Invalid credentials. Please try again.');
       }
     } catch (error) {
-      console.error('Error during website login:', error);
-      setError('An error occurred. Please try again.');
+      if (error.response.status === 400) 
+      {
+        setError("Invalid credentials")
+      } else {
+        console.error('Error during Google OAuth login:', error);
+        setError('An error occurred. Please try again.'); 
+      }
     }
   };
 
@@ -51,6 +57,10 @@ const Login = () => {
   
       if (oauthResponse.data.token) {
         localStorage.setItem('token', oauthResponse.data.token);
+        const decodedToken = jwtDecode(token);
+        localStorage.setItem('username', decodedToken.name);
+        // 'decodedToken' now holds the decoded JWT token payload
+        //console.log(decodedToken);
         console.log('Successful login via Google OAuth');
         navigate('/');
       } else {
