@@ -3,6 +3,13 @@
     margin-left: auto;
 }
 
+.search-bar-input.disabled {
+    background-color: #f0f0f0; /* Example gray background color */
+    color: #808080; /* Example gray text color */
+    /* Any other styles to visually indicate it's disabled */
+  }
+  
+
 .home-content {
     width: 90vw;
     margin: auto;

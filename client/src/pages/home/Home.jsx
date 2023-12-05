@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { useNavigate } from "react-router-dom";
@@ -22,6 +22,17 @@ const Home = () => {
   const [username, setUsername] = useState("Guest");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    setIsAuthenticated(!!token); // Set isAuthenticated to true if token exists, false otherwise
+    
+    const username = localStorage.getItem('username');
+    console.log(username)
+    setUsername(username || 'Guest'); // Set the username obtained from localStorage or 'Guest' if not present
+  }, []);
+  
+  
 
   // store this in database
   const creatorLinks = {
@@ -162,7 +173,7 @@ const Home = () => {
       <div className="home-title-container">
         <div className="account-icon">
           <div>
-            {!isAuthenticated && (
+            {(
               <span className="username-placeholder">{username}</span>
             )}
             <AccountCircleIcon
@@ -188,12 +199,15 @@ const Home = () => {
       </div>
       <div>
         <div className="search-bar">
-          <h2 className="search-bar-title">What did you eat?</h2>
+          <h2 className="search-bar-title">
+            {isAuthenticated ? 'What did you eat?' : 'Log in to use search feature'}
+          </h2>
           <input
-            className="search-bar-input"
+            className={`search-bar-input ${!isAuthenticated ? 'disabled' : ''}`} // Apply disabled class if not authenticated
             type="text"
             value={calorieQuery}
-            onChange={(i) => setCalorieQuery(i.target.value)}
+            onChange={(e) => setCalorieQuery(e.target.value)}
+            disabled={!isAuthenticated} // Disable input if not authenticated
           />
         </div>
         <div>
@@ -228,13 +242,14 @@ const Home = () => {
       <div>
         <div className="search-bar">
           <h2 className="search-bar-title">
-            What recipes do you want to make?
+            {isAuthenticated ? 'What recipes do you want to make?' : 'Log in to use search feature'}
           </h2>
           <input
-            className="search-bar-input"
+            className={`search-bar-input ${!isAuthenticated ? 'disabled' : ''}`} // Apply disabled class if not authenticated
             type="text"
             value={recipeQuery}
-            onChange={(i) => setRecipeQuery(i.target.value)}
+            onChange={(e) => setRecipeQuery(e.target.value)}
+            disabled={!isAuthenticated} // Disable input if not authenticated
           />
         </div>
         <div>
