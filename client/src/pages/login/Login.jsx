@@ -46,18 +46,24 @@ const Login = () => {
   const handleGoogleLogin = useCallback(
     async (response) => {
       try {
+        console.log("Google response:", response); // To check the response structure
         // Assuming response.credential holds the JWT token
         const token = response.credential;
+        console.log("Google OAuth token:", token); // To check the token
 
         // Sending only the token to the backend
         const oauthResponse = await axios.post(`${backend_url}/google-login`, {
           token: token,
         });
+        console.log("Google OAuth response data:", oauthResponse.data.token); // To check the response structure
+        console.log("Full Google response:", response);
 
         if (oauthResponse.data.token) {
           localStorage.setItem("token", oauthResponse.data.token);
+          
           const decodedToken = jwtDecode(token);
           localStorage.setItem("username", decodedToken.name);
+
           // 'decodedToken' now holds the decoded JWT token payload
           //console.log(decodedToken);
           console.log("Successful login via Google OAuth");
@@ -66,6 +72,7 @@ const Login = () => {
           setError("Google OAuth login failed. Please try again.");
         }
       } catch (error) {
+        console.log(error);
         console.error("Error during Google OAuth login:", error);
         setError("An error occurred. Please try again.");
       }
