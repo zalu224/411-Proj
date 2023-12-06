@@ -26,12 +26,12 @@ const Home = () => {
   const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
     setIsAuthenticated(!!token); // Set isAuthenticated to true if token exists, false otherwise
 
-    const username = localStorage.getItem("username");
+    const username = sessionStorage.getItem("username");
     console.log(username);
-    setUsername(username || "Guest"); // Set the username obtained from localStorage or 'Guest' if not present
+    setUsername(username || "Guest"); // Set the username obtained from sessionStorage or 'Guest' if not present
   }, []);
 
   // store this in database
@@ -52,7 +52,7 @@ const Home = () => {
 
   const handleCalorieQuery = () => {
     setLoading(true);
-    const token = localStorage.getItem("token"); // Retrieve the token here
+    const token = sessionStorage.getItem("token"); // Retrieve the token here
     console.log(token);
     if (calorieQuery.trim() === "") {
       setCalorieQuery("");
@@ -116,7 +116,7 @@ const Home = () => {
 
   const getNutritionHistory = () => {
     setLoading(true);
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
     axios
       .get("http://localhost:3000/api/search-history", {
         headers: {
