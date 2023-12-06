@@ -185,7 +185,6 @@ app.post("/login", async (req, res) => {
 app.post("/google-login", async (req, res) => {
   try {
     const { token } = req.body;
-    console.log("Received token:", req.body.token);
     const ticket = await client.verifyIdToken({
       idToken: token,
       audience: process.env.GOOGLE_CLIENT_ID,

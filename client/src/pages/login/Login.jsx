@@ -26,8 +26,8 @@ const Login = () => {
       // Check if the response contains a valid JWT token
       if (response.data.token) {
         // Store the token in local storage
-        localStorage.setItem("token", response.data.token);
-        localStorage.setItem("username", response.data.username);
+        sessionStorage.setItem("token", response.data.token);
+        sessionStorage.setItem("username", response.data.username);
         console.log("Successful login via website");
         navigate("/");
       } else {
@@ -59,10 +59,10 @@ const Login = () => {
         console.log("Full Google response:", response);
 
         if (oauthResponse.data.token) {
-          localStorage.setItem("token", oauthResponse.data.token);
+          sessionStorage.setItem("token", oauthResponse.data.token);
           
           const decodedToken = jwtDecode(token);
-          localStorage.setItem("username", decodedToken.name);
+          sessionStorage.setItem("username", decodedToken.name);
 
           // 'decodedToken' now holds the decoded JWT token payload
           //console.log(decodedToken);
