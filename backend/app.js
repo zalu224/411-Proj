@@ -12,7 +12,8 @@ const authRoutes = require("./routes/authRoutes");
 const jwt = require('jsonwebtoken'); 
 const User = require("./models/User");
 const passport = require("./passportConfig");
-
+const { OAuth2Client } = require("google-auth-library");
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 // connect to mongoDB
 mongoose
@@ -66,25 +67,37 @@ const verifyToken = (req, res, next) => {
 
     jwt.verify(token, process.env.JWT_SECRET_KEY, async (err, decoded) => {
       if (err) {
+        console.log("Error verifying token:", err);
         return res.status(403).json("Token is invalid");
       }
 
-      // Fetch the full user document from MongoDB
       try {
-        const user = await User.findOne({ username: decoded.username });
+        let user;
+        if (decoded.userId) {
+          // JWT token contains userId (Google login)
+          user = await User.findById(decoded.userId);
+        } else if (decoded.username) {
+          // JWT token contains username (Regular login)
+          user = await User.findOne({ username: decoded.username });
+        }
+
         if (!user) {
+          console.log("User not found");
           return res.status(404).json("User not found");
         }
+
         req.user = user;
         next();
       } catch (error) {
-        return res.status(500).json("Internal Server Error");
+        console.error("Error finding user:", error);
+        res.status(500).json("Internal Server Error");
       }
     });
   } else {
     res.status(401).json("You are not authenticated");
   }
 };
+
 
 
 
@@ -178,21 +191,39 @@ app.post('/login', async (req, res) => {
 
 
 
-
-app.post('/google-login', async (req, res) => {
+app.post("/google-login", async (req, res) => {
   try {
     const { token } = req.body;
+    console.log("Received token:", req.body.token);
+    const ticket = await client.verifyIdToken({
+      idToken: token,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
 
-    // Here, you can validate the token or perform any necessary logic
-    // For simplicity, it's assumed the token is valid and echo it back
-    const account = await User.findOrCreate({ googleTokeb: token }, { googleToken: token });
+    const payload = ticket.getPayload();
+    const googleId = payload["sub"]; // Get user's unique Google ID
 
-    res.status(200).json({ token: token });
+    // Find or create user in your database
+    const user = await User.findOrCreate(
+      { googleToken: googleId },
+      { googleToken: googleId }
+    );
+
+    // Generate JWT token
+    const jwtToken = jwt.sign(
+      { userId: user._id },
+      process.env.JWT_SECRET_KEY,
+      { expiresIn: "1h" }
+    );
+
+    res.status(200).json({ success: true, token: jwtToken });
   } catch (error) {
-    console.error('Error during Google OAuth login:', error);
-    res.status(500).json({ error: 'An error occurred during login' });
+    console.error("Error during Google OAuth login:", error);
+    res.status(500).json({ error: "An error occurred during login" });
   }
 });
+
+
 
 
 // Endpoint for creating an account
