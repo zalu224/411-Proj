@@ -1,0 +1,8 @@
+.search-history-container {
+    max-height: 12rem;
+    width: 50%;
+    max-width: 25rem;
+    margin: 1rem auto;
+    overflow-y: scroll;
+    border: 1px solid mediumslateblue;
+}
