@@ -1,3 +1,9 @@
+.login-back-button {
+  margin-top: 1rem;
+  color: black;
+  background-color:gainsboro;
+}
+
 .third-party-login-header {
   padding-top: 30px; 
 }

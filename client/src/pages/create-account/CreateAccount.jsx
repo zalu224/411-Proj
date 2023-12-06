@@ -56,6 +56,10 @@ const CreateAccount = () => {
     }
   };
 
+  const createAccountBackButton = () => {
+    navigate("/login");
+  };
+
   return (
     <Container maxWidth="sm">
       <div className="create-account-content">
@@ -102,6 +106,12 @@ const CreateAccount = () => {
           Create Account
         </Button>
       </div>
+      <button
+        className="create-account-back-button"
+        onClick={createAccountBackButton}
+      >
+        Back
+      </button>
     </Container>
   );
 };
