@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Container, Typography, TextField, Button } from "@mui/material";
+
+import "./CreateAccount.css";
 
 const CreateAccount = () => {
   const navigate = useNavigate();
