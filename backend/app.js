@@ -6,13 +6,13 @@ const dotenv = require("dotenv");
 require("dotenv").config();
 const port = 3000;
 const cors = require("cors");
-const passport = require("passport");
 const axios = require("axios");
 const { isAuthenticated, ensureAuthenticated } = require("./middleware");
 const authRoutes = require("./routes/authRoutes");
-const apiRoutes = require("./routes/apiRoutes");
 const jwt = require('jsonwebtoken'); 
 const User = require("./models/User");
+const passport = require("./passportConfig");
+
 
 // connect to mongoDB
 mongoose
@@ -51,16 +51,60 @@ app.use(express.json());
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Routes
-app.get("/", ensureAuthenticated, (req, res) => {
-  res.send("Welcome to our program!");
-});
+// Routes ( need to organize the routes below later)
+
 
 // auth routes (google)
 app.use("/auth", authRoutes);
 
+
+const verifyToken = (req, res, next) => {
+  const authHeader = req.headers.authorization;
+
+  if (authHeader) {
+    const token = authHeader.split(" ")[1]; // Bearer TOKEN
+
+    jwt.verify(token, process.env.JWT_SECRET_KEY, async (err, decoded) => {
+      if (err) {
+        return res.status(403).json("Token is invalid");
+      }
+
+      // Fetch the full user document from MongoDB
+      try {
+        const user = await User.findOne({ username: decoded.username });
+        if (!user) {
+          return res.status(404).json("User not found");
+        }
+        req.user = user;
+        next();
+      } catch (error) {
+        return res.status(500).json("Internal Server Error");
+      }
+    });
+  } else {
+    res.status(401).json("You are not authenticated");
+  }
+};
+
+
+
+app.get("/api/search-history", verifyToken, async (req, res) => {
+  try {
+    // req.user already contains the user document with search history
+    const searchHistory = req.user.searchHistory;
+
+    // Return the search history in the response
+    res.json({ success: true, data: searchHistory });
+  } catch (error) {
+    console.error("Error retrieving search history:", error);
+    res.status(500).send("An error occurred while fetching search history");
+  }
+});
+
+
 // API routes
-app.get("/api/:food", async (req, res) => {
+// Endpoint to make an API call and save the search result
+app.get("/api/:food", verifyToken, async (req, res) => {
   const food = req.params.food;
   try {
     const response = await axios.get(
@@ -71,12 +115,35 @@ app.get("/api/:food", async (req, res) => {
         },
       }
     );
+
+    // Check if req.user is defined
+    if (!req.user) {
+      console.error("User data not found");
+      return res.status(500).send("User data not found");
+
+    }
+
+    console.log("User:", req.user);
+    // Create an object with both the search string and the JSON response
+    const searchEntry = {
+      food: food,
+      response: { items: response.data.items },
+    };
+    console.log("Search entry:", searchEntry);
+    // Add the search entry to the user's search history
+    req.user.searchHistory.push(searchEntry);
+
+    // Save the user with the updated search history
+    await req.user.save();
+
+    // Send the fetched data back to the frontend
     res.send(response.data);
   } catch (error) {
     console.error(error);
     res.status(500).send("An error occurred while fetching data");
   }
 });
+
 
 // Endpoint for handling website login
 app.post('/login', async (req, res) => {
@@ -118,7 +185,7 @@ app.post('/google-login', async (req, res) => {
 
     // Here, you can validate the token or perform any necessary logic
     // For simplicity, it's assumed the token is valid and echo it back
-    const account = await User.findOrCreate({ googleId: token }, { googleId: token });
+    const account = await User.findOrCreate({ googleTokeb: token }, { googleToken: token });
 
     res.status(200).json({ token: token });
   } catch (error) {

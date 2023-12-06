@@ -51,6 +51,9 @@ const Home = () => {
 
   const handleCalorieQuery = () => {
     setLoading(true);
+    const token = localStorage.getItem("token"); // Retrieve the token here
+    console.log(token);
+
     if (calorieQuery.trim() === "") {
       setCalorieQuery("");
       setLoading(false);
@@ -65,7 +68,12 @@ const Home = () => {
       return;
     }
     axios
-      .get(`http://localhost:3000/api/${calorieQuery}`)
+      .get(`http://localhost:3000/api/${calorieQuery}`, {
+        headers: {
+          Authorization: `Bearer ${token}`, // Include JWT token in the header
+        },
+        withCredentials: true,
+      })
       .then((response) => {
         setCalorieResponse(response.data);
         setCalorieQuery("");
@@ -86,8 +94,14 @@ const Home = () => {
   };
   const getNutritionHistory = () => {
     setLoading(true);
+    const token = localStorage.getItem("token");
     axios
-      .get("http://localhost:3000/api/search-history")
+      .get("http://localhost:3000/api/search-history",{
+        headers: {
+          Authorization: `Bearer ${token}`, // Include JWT token in the header
+        },
+        withCredentials: true,
+      })
       .then((response) => {
         setNutritionHistory(response.data.data);
         console.log(nutritionHistory);

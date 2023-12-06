@@ -24,22 +24,25 @@ const userSchema = new mongoose.Schema({
   username: {
     type: String,
     required: false,
-    unique: true
+    unique: true,
   },
   password: {
     type: String,
-    required: false
+    required: false,
   },
   googleToken: {
     type: String,
     required: false,
   },
-  searchHistory: [
-    {
-      food: String,
-      response: responseSchema,
-    },
-  ],
+  searchHistory: {
+    type: [
+      {
+        food: String,
+        response: responseSchema,
+      },
+    ],
+    default: [], // Default value as an empty array
+  },
 });
 
 // Validate password method added to the userSchema

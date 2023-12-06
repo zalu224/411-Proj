@@ -1,28 +1,21 @@
 const jwt = require("jsonwebtoken");
 
-// quick middleware to check if user is authenticated
-const isAuthenticated = (req, res, next) => {
-  const token = req.cookies.token;
-  if (token) {
-    // verify token
-    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+const verifyToken = (req, res, next) => {
+  const authHeader = req.headers.authorization;
+
+  if (authHeader) {
+    const token = authHeader.split(" ")[1]; // Bearer TOKEN
+
+    jwt.verify(token, process.env.JWT_SECRET_KEY, (err, user) => {
       if (err) {
-        return res.status(403).send("Invalid token");
+        return res.status(403).json("Token is invalid");
       }
-      req.user = decoded;
+
+      req.user = user;
       next();
     });
   } else {
-    res.status(403).send("No token provided");
+    res.status(401).json("You are not authenticated");
   }
 };
 
-// uses isAuthenticated to check if user is authenticated
-const ensureAuthenticated = (req, res, next) => {
-  if (req.isAuthenticated()) {
-    return next();
-  }
-  res.redirect("/auth/google");
-};
-
-module.exports = { isAuthenticated, ensureAuthenticated };
