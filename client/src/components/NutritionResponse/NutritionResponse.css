@@ -19,6 +19,8 @@
 .response-container {
     width: 100%;
     margin: auto;
+    max-height: 20rem;
+    overflow-y: scroll;
 }
 
 .response-item {

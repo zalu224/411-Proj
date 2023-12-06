@@ -4,13 +4,17 @@
     display: flex;
     flex-direction: column;
 }
-
-.search-bar-input.disabled {
-    background-color: #f0f0f0; /* Example gray background color */
-    color: #808080; /* Example gray text color */
-    /* Any other styles to visually indicate it's disabled */
-  }
   
+.get-nutrition-search-history-button {
+    margin-bottom: 1rem;
+    color: black;
+    background-color:gainsboro;
+}
+
+.clear-nutrition-search-history-button {
+    color: black;
+    background-color:gainsboro;
+}
 
 .home-content {
     width: 90vw;
@@ -100,6 +104,12 @@
     font-size: 1.5rem;
     background-color: white;
     border: 2px solid black;
+}
+
+.search-bar-input.disabled {
+    background-color: #f0f0f0; /* Example gray background color */
+    color: #808080; /* Example gray text color */
+    /* Any other styles to visually indicate it's disabled */
 }
 
 .search-bar-title {

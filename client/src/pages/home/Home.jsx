@@ -6,7 +6,8 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import { useSnackbar } from "notistack";
 
-import NutritionResponse from "../../components/NutritionResponse";
+import NutritionResponse from "../../components/NutritionResponse/NutritionResponse";
+import SearchHistory from "../../components/SearchHistory/SearchHistory";
 import Spinner from "../../components/Spinner/Spinner";
 
 import "./Home.css";
@@ -53,7 +54,6 @@ const Home = () => {
     setLoading(true);
     const token = localStorage.getItem("token"); // Retrieve the token here
     console.log(token);
-
     if (calorieQuery.trim() === "") {
       setCalorieQuery("");
       setLoading(false);
@@ -63,6 +63,27 @@ const Home = () => {
     if (calorieQuery.includes("%")) {
       setLoading(false);
       enqueueSnackbar("Query cannot contain the % symbol", {
+        variant: "error",
+      });
+      return;
+    }
+    if (calorieQuery.includes("?")) {
+      setLoading(false);
+      enqueueSnackbar("Query cannot contain the ? symbol", {
+        variant: "error",
+      });
+      return;
+    }
+    if (calorieQuery.includes("/")) {
+      setLoading(false);
+      enqueueSnackbar("Query cannot contain the / symbol", {
+        variant: "error",
+      });
+      return;
+    }
+    if (calorieQuery.includes(`\\`)) {
+      setLoading(false);
+      enqueueSnackbar("Query cannot contain the `\\` symbol", {
         variant: "error",
       });
       return;
@@ -92,11 +113,12 @@ const Home = () => {
     setLoading(false);
     enqueueSnackbar("Query cleared", { variant: "success" });
   };
+
   const getNutritionHistory = () => {
     setLoading(true);
     const token = localStorage.getItem("token");
     axios
-      .get("http://localhost:3000/api/search-history",{
+      .get("http://localhost:3000/api/search-history", {
         headers: {
           Authorization: `Bearer ${token}`, // Include JWT token in the header
         },
@@ -104,7 +126,6 @@ const Home = () => {
       })
       .then((response) => {
         setNutritionHistory(response.data.data);
-        console.log(nutritionHistory);
         setLoading(false);
       })
       .catch((error) => {
@@ -112,6 +133,12 @@ const Home = () => {
         setLoading(false);
       });
   };
+  const clearNutritionHistory = () => {
+    setLoading(true);
+    setNutritionHistory(null);
+    setLoading(false);
+  };
+
   const handleRecipeQuery = () => {
     setLoading(true);
     if (recipeQuery.trim() === "") {
@@ -120,9 +147,30 @@ const Home = () => {
       enqueueSnackbar("Query cannot be empty", { variant: "error" });
       return;
     }
-    if (calorieQuery.includes("%")) {
+    if (recipeQuery.includes("%")) {
       setLoading(false);
       enqueueSnackbar("Query cannot contain the % symbol", {
+        variant: "error",
+      });
+      return;
+    }
+    if (recipeQuery.includes("?")) {
+      setLoading(false);
+      enqueueSnackbar("Query cannot contain the ? symbol", {
+        variant: "error",
+      });
+      return;
+    }
+    if (recipeQuery.includes("/")) {
+      setLoading(false);
+      enqueueSnackbar("Query cannot contain the / symbol", {
+        variant: "error",
+      });
+      return;
+    }
+    if (recipeQuery.includes(`\\`)) {
+      setLoading(false);
+      enqueueSnackbar("Query cannot contain the `\\` symbol", {
         variant: "error",
       });
       return;
@@ -131,7 +179,6 @@ const Home = () => {
       .get("placeholder")
       .then((response) => {
         setRecipeResponse(response.data);
-        console.log(recipeResponse);
         setRecipeQuery("");
         setLoading(false);
       })
@@ -231,12 +278,27 @@ const Home = () => {
             )
           )}
           {isAuthenticated ? (
-            <>
-              <button onClick={getNutritionHistory}>Get Search History</button>
-              <br />
-            </>
+            nutritionHistory !== null ? (
+              <button
+                className="clear-nutrition-search-history-button"
+                onClick={clearNutritionHistory}
+              >
+                Clear Nutrition Search History
+              </button>
+            ) : (
+              <>
+                <button
+                  className="get-nutrition-search-history-button"
+                  onClick={getNutritionHistory}
+                >
+                  Get Nutrition Search History
+                </button>
+              </>
+            )
           ) : null}
-          {!calorieQuery && calorieResponse === null && <br />}
+          {nutritionHistory !== null ? (
+            <SearchHistory response={nutritionHistory} />
+          ) : null}
         </div>
       </div>
       <div>
@@ -268,7 +330,7 @@ const Home = () => {
               </button>
             </div>
           )}
-          {loading ? (
+          {/* {loading ? (
             <Spinner />
           ) : (
             recipeResponse !== null && (
@@ -277,7 +339,7 @@ const Home = () => {
               </div>
             )
           )}
-          {!recipeQuery && recipeResponse === null && <br />}
+          {!recipeQuery && recipeResponse === null && <br />} */}
         </div>
       </div>
       <div className="home-footer">
