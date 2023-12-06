@@ -9,10 +9,9 @@ const cors = require("cors");
 const axios = require("axios");
 const { isAuthenticated, ensureAuthenticated } = require("./middleware");
 const authRoutes = require("./routes/authRoutes");
-const jwt = require('jsonwebtoken'); 
+const jwt = require("jsonwebtoken");
 const User = require("./models/User");
 const passport = require("./passportConfig");
-
 
 // connect to mongoDB
 mongoose
@@ -22,8 +21,8 @@ mongoose
 
 // cors setup
 const corsOptions = {
-  origin: 'http://localhost:5173', // the frontend port
-  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  origin: "http://localhost:5173", // the frontend port
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true, // required for cookies, authorization headers, etc.
 };
 
@@ -53,10 +52,8 @@ app.use(passport.session());
 
 // Routes ( need to organize the routes below later)
 
-
 // auth routes (google)
 app.use("/auth", authRoutes);
-
 
 const verifyToken = (req, res, next) => {
   const authHeader = req.headers.authorization;
@@ -86,8 +83,6 @@ const verifyToken = (req, res, next) => {
   }
 };
 
-
-
 app.get("/api/search-history", verifyToken, async (req, res) => {
   try {
     // req.user already contains the user document with search history
@@ -100,7 +95,6 @@ app.get("/api/search-history", verifyToken, async (req, res) => {
     res.status(500).send("An error occurred while fetching search history");
   }
 });
-
 
 // API routes
 // Endpoint to make an API call and save the search result
@@ -120,7 +114,6 @@ app.get("/api/:food", verifyToken, async (req, res) => {
     if (!req.user) {
       console.error("User data not found");
       return res.status(500).send("User data not found");
-
     }
 
     console.log("User:", req.user);
@@ -144,9 +137,8 @@ app.get("/api/:food", verifyToken, async (req, res) => {
   }
 });
 
-
 // Endpoint for handling website login
-app.post('/login', async (req, res) => {
+app.post("/login", async (req, res) => {
   try {
     const { username, password } = req.body;
 
@@ -154,73 +146,75 @@ app.post('/login', async (req, res) => {
     const user = await User.findOne({ username });
 
     if (!user) {
-      return res.status(400).json({ error: 'Invalid credentials' });
+      return res.status(400).json({ error: "Invalid credentials" });
     }
 
     // Validate the password using the validatePassword method
     const isPasswordValid = await user.validatePassword(password);
 
     if (!isPasswordValid) {
-      return res.status(400).json({ error: 'Invalid credentials' });
+      return res.status(400).json({ error: "Invalid credentials" });
     }
 
     // If username and password are valid, generate a token
-    const token = jwt.sign({ username }, process.env.JWT_SECRET_KEY, { expiresIn: '1h' });
+    const token = jwt.sign({ username }, process.env.JWT_SECRET_KEY, {
+      expiresIn: "1h",
+    });
 
     // Respond with the token and the username
     res.status(200).json({ token, username });
-    
   } catch (error) {
-    console.error('Error during login:', error);
-    res.status(500).json({ error: 'An error occurred during login' });
+    console.error("Error during login:", error);
+    res.status(500).json({ error: "An error occurred during login" });
   }
 });
 
-
-
-
-app.post('/google-login', async (req, res) => {
+app.post("/google-login", async (req, res) => {
   try {
     const { token } = req.body;
 
     // Here, you can validate the token or perform any necessary logic
     // For simplicity, it's assumed the token is valid and echo it back
-    const account = await User.findOrCreate({ googleTokeb: token }, { googleToken: token });
+    const account = await User.findOrCreate(
+      { googleToken: token },
+      { googleToken: token }
+    );
 
     res.status(200).json({ token: token });
   } catch (error) {
-    console.error('Error during Google OAuth login:', error);
-    res.status(500).json({ error: 'An error occurred during login' });
+    console.error("Error during Google OAuth login:", error);
+    res.status(500).json({ error: "An error occurred during login" });
   }
 });
 
-
 // Endpoint for creating an account
-app.post('/create-account', async (req, res) => {
+app.post("/create-account", async (req, res) => {
   try {
     const { username, password } = req.body;
 
     // Check if the account already exists in the database
     const existingUser = await User.findOne({ username });
 
-    console.log(username, password, existingUser)
+    console.log(username, password, existingUser);
 
     if (existingUser) {
-      return res.status(400).json({ exists: true, message: 'Username already taken' });
+      return res
+        .status(400)
+        .json({ exists: true, message: "Username already taken" });
     }
 
     // Create the account with the hashed password
     const newAccount = await User.create({ username, password: password });
 
     // Successful account creation
-    res.status(201).json({ success: true, message: 'Account created successfully' });
+    res
+      .status(201)
+      .json({ success: true, message: "Account created successfully" });
   } catch (error) {
-    console.error('Error creating account:', error);
-    res.status(500).json({ error: 'An error occurred. Please try again.' });
+    console.error("Error creating account:", error);
+    res.status(500).json({ error: "An error occurred. Please try again." });
   }
 });
-
-
 
 // route to check if server is accessible
 // access http://localhost:3000/test in browser
