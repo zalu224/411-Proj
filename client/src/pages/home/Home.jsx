@@ -31,7 +31,7 @@ const Home = () => {
 
     const username = sessionStorage.getItem("username");
     console.log(username);
-    setUsername(username || "Guest"); // Set the username obtained from localStorage or 'Guest' if not present
+    setUsername(username || "Guest"); // Set the username obtained from sessionStorage or 'Guest' if not present
   }, []);
 
   // store this in database
