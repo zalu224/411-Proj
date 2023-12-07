@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Container, Typography, TextField, Button } from "@mui/material";
+
+import "./CreateAccount.css";
 
 const CreateAccount = () => {
   const navigate = useNavigate();
@@ -56,6 +58,10 @@ const CreateAccount = () => {
     }
   };
 
+  const createAccountBackButton = () => {
+    navigate("/login");
+  };
+
   return (
     <Container maxWidth="sm">
       <div className="create-account-content">
@@ -102,6 +108,12 @@ const CreateAccount = () => {
           Create Account
         </Button>
       </div>
+      <button
+        className="create-account-back-button"
+        onClick={createAccountBackButton}
+      >
+        Back
+      </button>
     </Container>
   );
 };

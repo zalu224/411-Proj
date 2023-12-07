@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate, NavLink } from "react-router-dom";
 import axios from "axios";
 import { Button, TextField, Container, Typography } from "@mui/material";
@@ -60,7 +60,7 @@ const Login = () => {
 
         if (oauthResponse.data.token) {
           sessionStorage.setItem("token", oauthResponse.data.token);
-          
+
           const decodedToken = jwtDecode(token);
           sessionStorage.setItem("username", decodedToken.name);
 
@@ -79,6 +79,10 @@ const Login = () => {
     },
     [navigate, backend_url]
   );
+
+  const loginBackButton = () => {
+    navigate("/");
+  };
 
   useEffect(() => {
     // Loading Google API and initializing Google Sign-In
@@ -103,56 +107,61 @@ const Login = () => {
   }, [handleGoogleLogin]);
 
   return (
-    <Container maxWidth="sm">
-      <div className="login-content">
-        <Typography variant="h4" align="center" gutterBottom>
-          User Login
-        </Typography>
-        <TextField
-          label="Username"
-          variant="outlined"
-          fullWidth
-          margin="normal"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-        />
-        <TextField
-          label="Password"
-          type="password"
-          variant="outlined"
-          fullWidth
-          margin="normal"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <Typography variant="body1" align="center" gutterBottom>
-          Don't have an account?{" "}
-          <NavLink to="/create-account">Create one</NavLink>
-        </Typography>
-        {error && (
-          <Typography variant="body1" color="error" align="center">
-            {error}
+    <div>
+      <Container maxWidth="sm">
+        <div className="login-content">
+          <Typography variant="h4" align="center" gutterBottom>
+            User Login
           </Typography>
-        )}
-        <Button
-          variant="contained"
-          color="primary"
-          fullWidth
-          onClick={handleWebsiteLogin}
-        >
-          Website Login
-        </Button>
-        <Typography
-          variant="h4"
-          align="center"
-          gutterBottom
-          className="third-party-login-header"
-        >
-          Third Party Login
-        </Typography>
-        <div id="signInDiv" className="google-sign-in"></div>
-      </div>
-    </Container>
+          <TextField
+            label="Username"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+          <TextField
+            label="Password"
+            type="password"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <Typography variant="body1" align="center" gutterBottom>
+            Don't have an account?{" "}
+            <NavLink to="/create-account">Create one</NavLink>
+          </Typography>
+          {error && (
+            <Typography variant="body1" color="error" align="center">
+              {error}
+            </Typography>
+          )}
+          <Button
+            variant="contained"
+            color="primary"
+            fullWidth
+            onClick={handleWebsiteLogin}
+          >
+            Website Login
+          </Button>
+          <Typography
+            variant="h4"
+            align="center"
+            gutterBottom
+            className="third-party-login-header"
+          >
+            Third Party Login
+          </Typography>
+          <div id="signInDiv" className="google-sign-in"></div>
+        </div>
+      </Container>
+      <button className="login-back-button" onClick={loginBackButton}>
+        Back
+      </button>
+    </div>
   );
 };
 
