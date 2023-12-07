@@ -176,9 +176,12 @@ const Home = () => {
       return;
     }
     axios
-      .get("placeholder")
+      .get("http://localhost:3000/api/recipes", {
+        params: { query: recipeQuery },
+      })
       .then((response) => {
         setRecipeResponse(response.data);
+        console.log(response.data);
         setRecipeQuery("");
         setLoading(false);
       })
