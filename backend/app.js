@@ -109,6 +109,34 @@ app.get("/api/search-history", verifyToken, async (req, res) => {
   }
 });
 
+// Add a route for recipe searches
+app.get("/api/recipes", async (req, res) => {
+  const query = req.query.query;
+  console.log("Received query:", query); // Log the received query
+  try {
+    const response = await axios.get(
+      "https://api.spoonacular.com/recipes/complexSearch",
+      {
+        // Include the parameters in the params object
+        params: {
+          query: query, // Your query parameter // You can add other parameters like 'cuisine' if needed // cuisine: cuisine, maxCalories: maxCaories,
+        }, // Set the response content type
+        headers: {
+          "Content-Type": "application/json",
+          "X-Api-Key": process.env.SPOONACULAR_API_KEY, // Other necessary headers like API keys should be added here
+        },
+      }
+    );
+
+    // Process and send the response back
+    console.log("Response:", response.data);
+    res.json(response.data);
+  } catch (error) {
+    console.error("Error fetching recipes:", error);
+    res.status(500).send("An error occurred while fetching recipes");
+  }
+});
+
 // API routes
 // Endpoint to make an API call and save the search result
 app.get("/api/:food", verifyToken, async (req, res) => {
