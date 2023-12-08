@@ -1,9 +1,9 @@
-.response-column {
+.api-response-column {
     width: 12rem;
     margin: auto;
 }
 
-.response-column-field {
+.api-response-column-field {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -11,46 +11,46 @@
     transition: 0.3s ease;
 }
 
-.response-column-field:hover {
+.api-response-column-field:hover {
     border-bottom: 3px solid mediumslateblue;
     font-size: 1.125rem;
 }
 
-.response-container {
+.api-response-container {
     width: 100%;
     margin: auto;
     max-height: 20rem;
     overflow-y: scroll;
 }
 
-.response-item {
+.api-response-item {
     width: 45%;
     margin: auto;
 }
 
-.response-item-body {
+.api-response-item-body {
     display: flex;
     flex-flow: row wrap;
     text-align: left;
     justify-content: space-around;
 }
 
-.response-item-container {
+.api-response-item-container {
     display: flex;
     flex-flow: row wrap;
     justify-content: space-around;
 }
 
-.response-item-name {
+.api-response-item-name {
     margin-top: 1rem;
     margin-bottom: 0.5rem;
     font-size: 1.5rem;
 }
 
-.response-item-serving {
+.api-response-item-serving {
     margin-block: 0.25rem;
 }
 
-.response-title {
+.api-response-title {
     font-size: 2rem;
 }

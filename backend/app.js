@@ -96,7 +96,11 @@ const verifyToken = (req, res, next) => {
   }
 };
 
-app.get("/api/search-history", verifyToken, async (req, res) => {
+app.get("/", async (req, res) => {
+  return res.send("Nutrisistant Backend Server");
+});
+
+app.get("/api/calories/search-history", verifyToken, async (req, res) => {
   try {
     // req.user already contains the user document with search history
     const searchHistory = req.user.searchHistory;
@@ -110,17 +114,16 @@ app.get("/api/search-history", verifyToken, async (req, res) => {
 });
 
 // Add a route for recipe searches
-app.get("/api/recipes", async (req, res) => {
-  const query = req.query.query;
-  console.log("Received query:", query); // Log the received query
+app.get("/api/recipes/:query", verifyToken, async (req, res) => {
+  const query = req.params.query;
   try {
     const response = await axios.get(
-      "https://api.spoonacular.com/recipes/complexSearch",
+      `https://api.spoonacular.com/recipes/complexSearch?query=${query}`,
       {
-        // Include the parameters in the params object
-        params: {
-          query: query, // Your query parameter // You can add other parameters like 'cuisine' if needed // cuisine: cuisine, maxCalories: maxCaories,
-        }, // Set the response content type
+        // // Include the parameters in the params object
+        // params: {
+        //   query: query, // Your query parameter // You can add other parameters like 'cuisine' if needed // cuisine: cuisine, maxCalories: maxCaories,
+        // }, // Set the response content type
         headers: {
           "Content-Type": "application/json",
           "X-Api-Key": process.env.SPOONACULAR_API_KEY, // Other necessary headers like API keys should be added here
@@ -139,7 +142,7 @@ app.get("/api/recipes", async (req, res) => {
 
 // API routes
 // Endpoint to make an API call and save the search result
-app.get("/api/:food", verifyToken, async (req, res) => {
+app.get("/api/calories/:food", verifyToken, async (req, res) => {
   const food = req.params.food;
   try {
     const response = await axios.get(
