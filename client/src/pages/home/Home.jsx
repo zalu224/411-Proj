@@ -7,6 +7,7 @@ import MenuItem from "@mui/material/MenuItem";
 import { useSnackbar } from "notistack";
 
 import NutritionResponse from "../../components/NutritionResponse/NutritionResponse";
+import RecipeResponse from "../../components/RecipeResponse/RecipeResponse";
 import SearchHistory from "../../components/SearchHistory/SearchHistory";
 import Spinner from "../../components/Spinner/Spinner";
 
@@ -89,7 +90,7 @@ const Home = () => {
       return;
     }
     axios
-      .get(`http://localhost:3000/api/${calorieQuery}`, {
+      .get(`http://localhost:3000/api/calories/${calorieQuery}`, {
         headers: {
           Authorization: `Bearer ${token}`, // Include JWT token in the header
         },
@@ -118,7 +119,7 @@ const Home = () => {
     setLoading(true);
     const token = sessionStorage.getItem("token");
     axios
-      .get("http://localhost:3000/api/search-history", {
+      .get("http://localhost:3000/api/calories/search-history", {
         headers: {
           Authorization: `Bearer ${token}`, // Include JWT token in the header
         },
@@ -141,6 +142,7 @@ const Home = () => {
 
   const handleRecipeQuery = () => {
     setLoading(true);
+    const token = sessionStorage.getItem("token");
     if (recipeQuery.trim() === "") {
       setRecipeQuery("");
       setLoading(false);
@@ -175,13 +177,25 @@ const Home = () => {
       });
       return;
     }
+    if (recipeQuery.match(/[0-9]/) !== null) {
+      setLoading(false);
+      enqueueSnackbar("Recipe query cannot contain numbers", {
+        variant: "error",
+      });
+    }
     axios
-      .get("http://localhost:3000/api/recipes", {
-        params: { query: recipeQuery },
-      })
+      .get(
+        `http://localhost:3000/api/recipes/${recipeQuery.split(" ").join("")}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // Include JWT token in the header
+          },
+          withCredentials: true,
+        }
+      )
       .then((response) => {
-        setRecipeResponse(response.data);
-        console.log(response.data);
+        setRecipeResponse(response.data.results);
+        console.log(recipeResponse);
         setRecipeQuery("");
         setLoading(false);
       })
@@ -193,7 +207,7 @@ const Home = () => {
   const handleRecipeQueryClear = () => {
     setLoading(true);
     setRecipeQuery("");
-    setRecipeResponse(false);
+    setRecipeResponse(null);
     setLoading(false);
     enqueueSnackbar("Query cleared", { variant: "success" });
   };
@@ -308,7 +322,7 @@ const Home = () => {
         <div className="search-bar">
           <h2 className="search-bar-title">
             {isAuthenticated
-              ? "What recipes do you want to make?"
+              ? "What ingredients do you want to use?"
               : "Log in to get recipes"}
           </h2>
           <input
@@ -323,7 +337,7 @@ const Home = () => {
           {(recipeQuery !== "" || recipeResponse !== null) && (
             <div className="search-bar-buttons">
               <button className="search-bar-button" onClick={handleRecipeQuery}>
-                Analyze
+                Search
               </button>
               <button
                 className="search-bar-button"
@@ -333,16 +347,16 @@ const Home = () => {
               </button>
             </div>
           )}
-          {/* {loading ? (
+          {loading ? (
             <Spinner />
           ) : (
             recipeResponse !== null && (
-              <div className="nutrition-response">
-                <NutritionResponse response={sampleResponse.items} />
+              <div className="recipe-response">
+                <RecipeResponse response={recipeResponse} />
               </div>
             )
           )}
-          {!recipeQuery && recipeResponse === null && <br />} */}
+          {!recipeQuery && recipeResponse === null && <br />}
         </div>
       </div>
       <div className="home-footer">
