@@ -116,7 +116,6 @@ app.get("/api/calories/search-history", verifyToken, async (req, res) => {
 // Add a route for recipe searches
 app.get("/api/recipes/:query", verifyToken, async (req, res) => {
   const query = req.params.query;
-  console.log(`Received query: ${query}`); // Log the received query
   try {
     const response = await axios.get(
       `https://api.spoonacular.com/recipes/complexSearch?query=${query}`,
