@@ -6,10 +6,9 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import { useSnackbar } from "notistack";
 
-import NutritionResponse from "../../components/NutritionResponse/NutritionResponse";
-import RecipeResponse from "../../components/RecipeResponse/RecipeResponse";
+import NutritionResponse from "../../components/APIResponse/NutritionResponse";
+import RecipeResponse from "../../components/APIResponse/RecipeResponse";
 import SearchHistory from "../../components/SearchHistory/SearchHistory";
-import Spinner from "../../components/Spinner/Spinner";
 
 import "./Home.css";
 
@@ -20,7 +19,6 @@ const Home = () => {
   const [nutritionHistory, setNutritionHistory] = useState(null);
   const [recipeQuery, setRecipeQuery] = useState("");
   const [recipeResponse, setRecipeResponse] = useState(null);
-  const [loading, setLoading] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [username, setUsername] = useState("Guest");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -52,38 +50,32 @@ const Home = () => {
   };
 
   const handleCalorieQuery = () => {
-    setLoading(true);
     const token = sessionStorage.getItem("token"); // Retrieve the token here
     console.log(token);
     if (calorieQuery.trim() === "") {
       setCalorieQuery("");
-      setLoading(false);
       enqueueSnackbar("Query cannot be empty", { variant: "error" });
       return;
     }
     if (calorieQuery.includes("%")) {
-      setLoading(false);
       enqueueSnackbar("Query cannot contain the % symbol", {
         variant: "error",
       });
       return;
     }
     if (calorieQuery.includes("?")) {
-      setLoading(false);
       enqueueSnackbar("Query cannot contain the ? symbol", {
         variant: "error",
       });
       return;
     }
     if (calorieQuery.includes("/")) {
-      setLoading(false);
       enqueueSnackbar("Query cannot contain the / symbol", {
         variant: "error",
       });
       return;
     }
     if (calorieQuery.includes(`\\`)) {
-      setLoading(false);
       enqueueSnackbar("Query cannot contain the `\\` symbol", {
         variant: "error",
       });
@@ -99,24 +91,19 @@ const Home = () => {
       .then((response) => {
         setCalorieResponse(response.data);
         setCalorieQuery("");
-        setLoading(false);
       })
       .catch((error) => {
         console.log(error);
         enqueueSnackbar(error, { variant: "error" });
-        setLoading(false);
       });
   };
   const handleCalorieQueryClear = () => {
-    setLoading(true);
     setCalorieQuery("");
     setCalorieResponse(null);
-    setLoading(false);
     enqueueSnackbar("Query cleared", { variant: "success" });
   };
 
   const getNutritionHistory = () => {
-    setLoading(true);
     const token = sessionStorage.getItem("token");
     axios
       .get("http://localhost:3000/api/calories/search-history", {
@@ -127,61 +114,53 @@ const Home = () => {
       })
       .then((response) => {
         setNutritionHistory(response.data.data);
-        setLoading(false);
       })
       .catch((error) => {
         console.log(error);
-        setLoading(false);
+
+        enqueueSnackbar(error, { variant: "error" });
       });
   };
   const clearNutritionHistory = () => {
-    setLoading(true);
     setNutritionHistory(null);
-    setLoading(false);
   };
 
   const handleRecipeQuery = () => {
-    setLoading(true);
     const token = sessionStorage.getItem("token");
     if (recipeQuery.trim() === "") {
       setRecipeQuery("");
-      setLoading(false);
       enqueueSnackbar("Query cannot be empty", { variant: "error" });
       return;
     }
     if (recipeQuery.includes("%")) {
-      setLoading(false);
       enqueueSnackbar("Query cannot contain the % symbol", {
         variant: "error",
       });
       return;
     }
     if (recipeQuery.includes("?")) {
-      setLoading(false);
       enqueueSnackbar("Query cannot contain the ? symbol", {
         variant: "error",
       });
       return;
     }
     if (recipeQuery.includes("/")) {
-      setLoading(false);
       enqueueSnackbar("Query cannot contain the / symbol", {
         variant: "error",
       });
       return;
     }
     if (recipeQuery.includes(`\\`)) {
-      setLoading(false);
       enqueueSnackbar("Query cannot contain the `\\` symbol", {
         variant: "error",
       });
       return;
     }
-    if (recipeQuery.match(/[0-9]/) !== null) {
-      setLoading(false);
+    if (recipeQuery.search(/\d/) !== -1) {
       enqueueSnackbar("Recipe query cannot contain numbers", {
         variant: "error",
       });
+      return;
     }
     axios
       .get(
@@ -194,21 +173,27 @@ const Home = () => {
         }
       )
       .then((response) => {
-        setRecipeResponse(response.data.results);
-        console.log(recipeResponse);
-        setRecipeQuery("");
-        setLoading(false);
+        if (response.data.results.length !== 0) {
+          setRecipeResponse(response.data.results);
+          console.log(recipeResponse);
+          setRecipeQuery("");
+        }
+        if (response.data.results.length === 0) {
+          enqueueSnackbar(
+            "This query does not seem to be working - try another query if the error persists",
+            { variant: "error" }
+          );
+        }
       })
       .catch((error) => {
         console.log(error);
-        setLoading(false);
+
+        enqueueSnackbar(error, { variant: "error" });
       });
   };
   const handleRecipeQueryClear = () => {
-    setLoading(true);
     setRecipeQuery("");
     setRecipeResponse(null);
-    setLoading(false);
     enqueueSnackbar("Query cleared", { variant: "success" });
   };
 
@@ -285,14 +270,10 @@ const Home = () => {
               </button>
             </div>
           )}
-          {loading ? (
-            <Spinner />
-          ) : (
-            calorieResponse !== null && (
-              <div className="nutrition-response">
-                <NutritionResponse response={calorieResponse.items} />
-              </div>
-            )
+          {calorieResponse !== null && (
+            <div className="nutrition-response">
+              <NutritionResponse response={calorieResponse.items} />
+            </div>
           )}
           {isAuthenticated ? (
             nutritionHistory !== null ? (
@@ -347,15 +328,13 @@ const Home = () => {
               </button>
             </div>
           )}
-          {loading ? (
-            <Spinner />
-          ) : (
-            recipeResponse !== null && (
-              <div className="recipe-response">
-                <RecipeResponse response={recipeResponse} />
-              </div>
-            )
+
+          {recipeResponse !== null && (
+            <div className="recipe-response">
+              <RecipeResponse response={recipeResponse} />
+            </div>
           )}
+
           {!recipeQuery && recipeResponse === null && <br />}
         </div>
       </div>
