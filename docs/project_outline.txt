@@ -1,0 +1,15 @@
+Project name is Nutrisistant. 
+
+Workload distribution: two on the frontend and three on the backend
+
+The user story we started with is that for a person who wants to know the nutrients of certain food he has eaten, he can simply enter in a string and obtain the corresponding nutrient information. Then another user story we considered was in the case a person would want to make a certain dish for a piece of food ingredient, then he can enter the string and receive a collection of recipes and photos representing the recipes back.
+
+Frontend: react.js, html, css
+Backend: node.js
+Used Axios for frontend and backend data transfer
+Database: mongodb
+APIs: calorieninjas, spoonacular
+
+As discussed in lecture, instead of directly storing user passwords, we stored the hashed passwords instead.
+
+Note: a .env file for the frontend and a .env file for the backend are needed for the project to be able to run, which is not uploaded to github for safety issues. The google doc is shared with professor Donham, named “CS411 project overhead”, sent from Tony Cen Cen, in case he would like to run the code.
